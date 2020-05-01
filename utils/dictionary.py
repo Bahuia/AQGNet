@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python
+
+"""
+# @Time    : 2020/5/1
+# @Author  : Yongrui Chen
+# @File    : dictionary.py
+# @Software: PyCharm
+"""
+
 from six import iteritems
 import codecs
 

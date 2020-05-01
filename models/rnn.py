@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+# !/usr/bin/python
+
+"""
+# @Time    : 2020/5/1
+# @Author  : Yongrui Chen
+# @File    : rnn.py
+# @Software: PyCharm
+"""
+
 import os
 import sys
 import torch

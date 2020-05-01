@@ -1,6 +1,13 @@
 # -*- coding: utf-8 -*-
-# Mostly from https://github.com/OpenNMT/OpenNMT-py
-# Most Code in load/save word2vec format refer to Gensim
+# !/usr/bin/python
+
+"""
+# @Time    : 2020/5/1
+# @Author  : Yongrui Chen
+# @File    : embedding.py
+# @Software: PyCharm
+"""
+
 import sys
 import torch
 import torch.nn as nn

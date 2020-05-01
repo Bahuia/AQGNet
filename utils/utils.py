@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 # !/usr/bin/python
+
+"""
+# @Time    : 2020/5/1
+# @Author  : Yongrui Chen
+# @File    : utils.py
+# @Software: PyCharm
+"""
+
 import sys
 from builtins import range
 import numpy as np
@@ -111,98 +119,7 @@ def tokenize_by_uppercase(s):
     tokens.append(s[last: len(s)])
     return tokens[1:]
 
-wordnet_lemmatizer = WordNetLemmatizer()
-
-stop_words = ["the", ""]
-
-diction = {"movie": "film", "people": "person"}
-
-def transform_type_to_tokens(type_pool):
-    type_tokens = []
-    for type in type_pool:
-        type_name = type[len("http://dbpedia.org/ontology/"):]
-        tokens = tokenize_by_uppercase(type_name)
-        tokens = [x.lower() for x in tokens]
-        type_tokens.append(tokens)
-    return type_tokens
-
-def exact_matching(toks, idx, type_toks, type_pool):
-    results = []
-    for endIdx in reversed(range(idx + 1, len(toks))):
-        sub_toks = toks[idx: endIdx]
-        sub_str = " ".join(sub_toks)
-        for i, type in enumerate(type_toks):
-            type_str = " ".join(type)
-            if sub_str == type_str:
-                results.append(type_pool[i])
-            elif sub_str in diction:
-                if diction[sub_str] == type_str:
-                    results.append(type_pool[i])
-        if len(results) > 0:
-            return endIdx, results
-    return idx, results
-
-def partial_matching(toks, idx, type_toks, type_pool):
-
-    def check_in(list_one, list_two):
-        overlap = list(set(list_one) & set(list_two))
-        if len(overlap) == len(list_one) and (len(list_two) <= 2):
-            if len(overlap) == 1 and (overlap[0] in ["in", "of", "is", "by"] or overlap[0].isdigit()):
-                return False
-            elif len(overlap) == 2 and (overlap[0] in ["of"] or overlap[1] in ["of"]):
-                return False
-            else:
-                return True
-        else:
-            return False
-
-    results = []
-    for endIdx in reversed(range(idx + 1, len(toks))):
-        sub_toks = toks[idx: endIdx]
-        sub_str = " ".join(sub_toks)
-        for i, type in enumerate(type_toks):
-            type_str = " ".join(type)
-            if sub_str == type_str:
-                continue
-            if check_in(sub_toks, type):
-                results.append(type_pool[i])
-        if len(results) > 0:
-            return endIdx, results
-    return idx, results
-
-def type_linking(q_toks, type_toks, type_pool):
-    idx = 0
-    mentions = []
-    num_toks = len(q_toks)
-    while idx < num_toks:
-        e_end_idx, exact_matched_types = exact_matching(q_toks, idx, type_toks, type_pool)
-
-        p_end_idx, partial_matched_types = partial_matching(q_toks, idx, type_toks, type_pool)
-
-        # if len(exact_matched_types) > 0:
-        #     mentions.append([[idx, e_end_idx], exact_matched_types])
-        #     idx = e_end_idx
-        # else:
-        #     idx += 1
-
-        if len(exact_matched_types) > 0:
-            if p_end_idx == e_end_idx and len(partial_matched_types) > 0:
-                mentions.append([[idx, e_end_idx], exact_matched_types + partial_matched_types])
-            else:
-                mentions.append([[idx, e_end_idx], exact_matched_types])
-            idx = e_end_idx
-        elif len(partial_matched_types) > 0:
-            mentions.append([[idx, p_end_idx], partial_matched_types])
-            idx = p_end_idx
-        else:
-            idx += 1
-    mentions = mentions
-    return mentions
-
-stop_types = set(["<http://dbpedia.org/ontology/Country>", "<http://dbpedia.org/ontology/Person>"])
-
-def kb_constraint(aqg, data):
-
+def formalize_aqg(aqg, data):
     cand_vertices = {2: []}
 
     if data["entity1_uri"] != "":
@@ -259,41 +176,67 @@ def kb_constraint(aqg, data):
             if i % 3 == 1 and obj == 3:
                 type_label_index = i
         aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index + 3:]
-
-    # grounding_res = aqg.grounding(cand_vertices)
-    # if len(grounding_res) == 0:
-    #     # type
-    #     type_v = -1
-    #     for v, label in aqg.v_labels.items():
-    #         if label == 3:
-    #             type_v = v
-    #             break
-    #
-    #     if type_v != -1:
-    #         attached_u = -1
-    #         for v1, v2, e_label in aqg.edges:
-    #             if v1 == type_v:
-    #                 attached_u = v2
-    #                 break
-    #         assert attached_u != -1
-    #
-    #         aqg.remove_edge(attached_u, type_v)
-    #         aqg.vertices.remove(type_v)
-    #         aqg.v_labels.pop(type_v)
-    #
-    #         pred_obj_labels = [x for x in aqg.pred_obj_labels]
-    #         type_label_index = -1
-    #         for i, obj in enumerate(pred_obj_labels):
-    #             if i % 3 == 1 and obj == 3:
-    #                 type_label_index = i
-    #         aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index+3:]
-    #
-    # print(data["id"], len(grounding_res))
     return aqg
+
+
+def kb_constraint(aqg, data):
+
+    cand_vertices = {2: []}
+
+    if data["entity1_uri"] != "":
+        cand_vertices[2].append("<" + data["entity1_uri"] + ">")
+    if data["entity2_uri"] != "":
+        cand_vertices[2].append("<" + data["entity2_uri"] + ">")
+
+    cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
+
+    grounding_res = aqg.grounding(cand_vertices)
+    if len(grounding_res) == 0:
+        # type
+        type_v = -1
+        for v, label in aqg.v_labels.items():
+            if label == 3:
+                type_v = v
+                break
+
+        if type_v != -1:
+            attached_u = -1
+            for v1, v2, e_label in aqg.edges:
+                if v1 == type_v:
+                    attached_u = v2
+                    break
+            assert attached_u != -1
+
+            aqg.remove_edge(attached_u, type_v)
+            aqg.vertices.remove(type_v)
+            aqg.v_labels.pop(type_v)
+
+            pred_obj_labels = [x for x in aqg.pred_obj_labels]
+            type_label_index = -1
+            for i, obj in enumerate(pred_obj_labels):
+                if i % 3 == 1 and obj == 3:
+                    type_label_index = i
+            aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index+3:]
+
+    print(data["id"], len(grounding_res))
+    return aqg
+
+def generate_cand_queries(aqg, data):
+    cand_vertices = {2: []}
+
+    if data["entity1_uri"] != "":
+        cand_vertices[2].append("<" + data["entity1_uri"] + ">")
+    if data["entity2_uri"] != "":
+        cand_vertices[2].append("<" + data["entity2_uri"] + ">")
+
+    cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
+
+    grounding_res = aqg.grounding(cand_vertices)
+    return grounding_res
 
 def check_relation(rel):
     if rel.find("http://dbpedia.org/property/") != -1 or \
-        rel.find("<http://dbpedia.org/ontology/") != -1:
+        rel.find("http://dbpedia.org/ontology/") != -1:
         return True
     return False
 
@@ -343,7 +286,6 @@ def load_glove_vocab(filename, vocab_size, binary=False, encoding='utf8', unicod
 def load_word2vec_format(filename, word_idx, binary=False, normalize=False,
                          encoding='utf8', unicode_errors='ignore'):
     """
-    refer to gensim
     load Word Embeddings
     If you trained the C model using non-utf8 encoding for words, specify that
     encoding in `encoding`.

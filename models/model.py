@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+# !/usr/bin/python
+
+"""
+# @Time    : 2020/5/1
+# @Author  : Yongrui Chen
+# @File    : model.py
+# @Software: PyCharm
+"""
+
 import sys
 import copy
 import math
@@ -70,7 +79,7 @@ class AQGNet(nn.Module):
         self.ae_readout = lambda q: F.linear(self.read_out_active(self.query_vec_to_ae_vec(q)),
                                                      self.edge_embedding.weight, self.ae_readout_b)
 
-        self.sv_pointer_net = PointerNet(args.d_h, args.d_h, attention_type='affine')
+        self.sv_pointer_net = PointerNet(args.d_h, args.d_h, attention_type=args.att_type)
 
     def forward(self, batch):
         q, q_lens, gold_graphs, gold_objs = batch
