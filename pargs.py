@@ -54,7 +54,9 @@ def pargs():
     parser.add_argument('--random_init_words', type=str,
                         default=os.path.abspath('./vocab/random_init_words.json'))
     parser.add_argument('--emb_cache', type=str, default=os.path.abspath('./vocab/word_embeddings_cache.pt'))
-    parser.add_argument('--cpt', type=str, default='', required=True)
+    parser.add_argument('--cpt', type=str, default='')
+
+    parser.add_argument('--kb_endpoint', type=str, default='')
 
     args = parser.parse_args()
     return args

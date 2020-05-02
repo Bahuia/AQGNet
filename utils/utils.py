@@ -179,7 +179,7 @@ def formalize_aqg(aqg, data):
     return aqg
 
 
-def kb_constraint(aqg, data):
+def kb_constraint(aqg, data, kb_endpoint):
 
     cand_vertices = {2: []}
 
@@ -190,7 +190,7 @@ def kb_constraint(aqg, data):
 
     cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
 
-    grounding_res = aqg.grounding(cand_vertices)
+    grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
     if len(grounding_res) == 0:
         # type
         type_v = -1
@@ -221,7 +221,7 @@ def kb_constraint(aqg, data):
     print(data["id"], len(grounding_res))
     return aqg
 
-def generate_cand_queries(aqg, data):
+def generate_cand_queries(aqg, data, kb_endpoint):
     cand_vertices = {2: []}
 
     if data["entity1_uri"] != "":
@@ -231,7 +231,7 @@ def generate_cand_queries(aqg, data):
 
     cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
 
-    grounding_res = aqg.grounding(cand_vertices)
+    grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
     return grounding_res
 
 def check_relation(rel):

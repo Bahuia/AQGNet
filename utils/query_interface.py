@@ -15,15 +15,14 @@ from datetime import datetime
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 # DBpedia_endpoint = "https://dbpedia.org/sparql"
-DBpedia_endpoint = "http://10.201.180.179:3030/dbpedia/sparql"
 
 
-def DBpedia_query(_query):
+def DBpedia_query(_query, kb_endpoint):
     """
     :param _query: sparql query statement
     :return:
     """
-    sparql = SPARQLWrapper(DBpedia_endpoint)
+    sparql = SPARQLWrapper(kb_endpoint)
     sparql.setQuery(_query)
     sparql.setReturnFormat(JSON)
     # sparql.setTimeout(5)

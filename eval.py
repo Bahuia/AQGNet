@@ -63,11 +63,11 @@ if __name__ == '__main__':
         pred_aqg = formalize_aqg(pred_aqg, data)
 
         if args.kb_constraint:
-            pred_aqg = kb_constraint(aqg, data)
+            pred_aqg = kb_constraint(aqg, data, args.kb_endpoint)
 
         is_correct = pred_aqg.is_equal(data["gold_aqg"])
 
-        cand_queries = generate_cand_queries(pred_aqg, data)
+        cand_queries = generate_cand_queries(pred_aqg, data, args.kb_endpoint)
 
         query_res = {
             "id": data["id"],

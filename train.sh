@@ -4,7 +4,7 @@ devices=0
 
 python train.py \
 --train_data ./data/processed_train.pkl \
---glove_path ./data/glove.42B.300d.txt \
+--glove_path ../GloVe/glove.42B.300d.txt \
 --readout identity \
 --att_type affine \
 --d_h 256 \

@@ -199,7 +199,7 @@ class AbstractQueryGraph:
                 new_patterns.append(p)
         return new_patterns
 
-    def grounding(self, cand_vertices):
+    def grounding(self, cand_vertices, kb_endpoint):
         """
         grounding the aqg to generate candidate queries
         :param cand_vertices:
@@ -296,7 +296,7 @@ class AbstractQueryGraph:
         # second grounding for "Rel" edges.
         grounded_sparqls = []
         for s in first_grounded_sparqls:
-            results = DBpedia_query(s)
+            results = DBpedia_query(s, kb_endpoint)
             for res in results:
                 flag = True
                 for k, v in res.items():

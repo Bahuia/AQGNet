@@ -42,11 +42,10 @@ class GenerationDataLoader:
         return q, gold_graphs, gold_objs, d
 
 
-    def load_data(self, file, bs, use_small=False, shuffle=True):
-        datas = pickle.load(open(file, "rb"))
+    def load_data(self, datas, bs, use_small=False, shuffle=True):
 
         if use_small:
-            datas = datas[:100]
+            datas = datas[:10]
 
         if shuffle:
             random.shuffle(datas)
