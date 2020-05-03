@@ -224,12 +224,18 @@ class AbstractQueryGraph:
         if not flag:
             return []
 
+        count_ans_v = -1
         query_intention = "NONE"
         for v1, v2, e_label in self.edges:
             if e_label == 0:
                 query_intention = "COUNT"
+                if self.v_labels[v1] == 0:
+                    count_ans_v = v2
+                else:
+                    count_ans_v = v1
             elif e_label == 1:
                 query_intention = "ASK"
+
 
         tmps = {}
         for v_class, vertices in aqg_vertices.items():
@@ -253,14 +259,14 @@ class AbstractQueryGraph:
             for pattern in sparql_patterns:
                 condition = []
                 for i, (v1, v2, e_label) in enumerate(pattern):
-                    if self.v_labels[v1] == 0:
+                    if self.v_labels[v1] == 0 or v1 == count_ans_v:
                         g_v1 = "?uri"
                     elif self.v_labels[v1] == 1:
                         g_v1 = "?x_" + str(v1)
                     else:
                         g_v1 = v_map[v1]
 
-                    if self.v_labels[v2] == 0:
+                    if self.v_labels[v2] == 0 or v2 == count_ans_v:
                         g_v2 = "?uri"
                     elif self.v_labels[v2] == 1:
                         g_v2 = "?x_" + str(v2)
@@ -292,12 +298,20 @@ class AbstractQueryGraph:
                     first_grounded_sparqls.append(tmp_sparql)
 
         p_where = re.compile(r'[{](.*?)[}]', re.S)
+        p_select = re.compile(r'SELECT (.*?) WHERE', re.S)
 
         # second grounding for "Rel" edges.
         grounded_sparqls = []
         for s in first_grounded_sparqls:
             results = DBpedia_query(s, kb_endpoint)
+            select_clauses = re.findall(p_select, s)
+            where_clauses = re.findall(p_where, s)
+            assert len(where_clauses) == 1 and len(select_clauses) == 1
+            need_grounded_rels = select_clauses[0].split(' ')
+
             for res in results:
+                if len(res) != len(need_grounded_rels):
+                    continue
                 flag = True
                 for k, v in res.items():
                     if not check_relation(v):
@@ -306,8 +320,6 @@ class AbstractQueryGraph:
                 if not flag:
                     continue
                 if len(res) > 0:
-                    where_clauses = re.findall(p_where, s)
-                    assert len(where_clauses) == 1
                     if query_intention == "COUNT":
                         new_s = "SELECT DISTINCT COUNT(?uri) WHERE {" + where_clauses[0] + "}"
                     elif query_intention == "ASK":
