@@ -21,8 +21,6 @@ sys.path.append("..")
 from utils.dictionary import init_vocab
 from utils.utils import tokenize_by_uppercase
 from rules.sparql import SPARQLParser
-from pargs import pargs
-
 
 wordnet_lemmatizer = WordNetLemmatizer()
 
@@ -91,6 +89,8 @@ if __name__ == '__main__':
             os.makedirs(vocab_dir)
 
         word_vocab = mk_vocabs(processed_datas)
-        print("Word vocabulary size: {} \n".format(len(word_vocab)))
-        pickle.dump(word_vocab, open(os.path.join(vocab_dir, "word_vocab.pkl"), "wb"))
+        print("Word vocabulary size: {}".format(len(word_vocab)))
+        pickle.dump(word_vocab, open(os.path.join(vocab_dir, "generation_word_vocab.pkl"), "wb"))
+        print("Word vocabulary save to \"{}\".".format(
+            os.path.abspath(os.path.join(vocab_dir, "generation_word_vocab.pkl"))))
 

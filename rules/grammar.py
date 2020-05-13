@@ -301,7 +301,7 @@ class AbstractQueryGraph:
         p_select = re.compile(r'SELECT (.*?) WHERE', re.S)
 
         # second grounding for "Rel" edges.
-        grounded_sparqls = []
+        grounded_sparqls = set()
         for s in first_grounded_sparqls:
             results = DBpedia_query(s, kb_endpoint)
             select_clauses = re.findall(p_select, s)
@@ -309,27 +309,61 @@ class AbstractQueryGraph:
             assert len(where_clauses) == 1 and len(select_clauses) == 1
             need_grounded_rels = select_clauses[0].split(' ')
 
+            rels = set()
             for res in results:
                 if len(res) != len(need_grounded_rels):
                     continue
                 flag = True
                 for k, v in res.items():
-                    if not check_relation(v):
+                    if not check_relation(v) or v in stop_rels:
                         flag = False
                         break
                 if not flag:
                     continue
-                if len(res) > 0:
-                    if query_intention == "COUNT":
-                        new_s = "SELECT DISTINCT COUNT(?uri) WHERE {" + where_clauses[0] + "}"
-                    elif query_intention == "ASK":
-                        new_s = "ASK WHERE {" + where_clauses[0] + "}"
-                    else:
-                        new_s = "SELECT DISTINCT ?uri WHERE {" + where_clauses[0] + "}"
-                    for k, v in res.items():
-                        new_s = new_s.replace("?" + k, "<" + v + ">")
-                    grounded_sparqls.append(new_s)
-        grounded_sparqls = list(set(grounded_sparqls))
+                rel = ";".join(["#".join([k,v]) for k, v in res.items()])
+                rels.add(rel)
 
+            for rel in rels:
+                if query_intention == "COUNT":
+                    new_s = "SELECT DISTINCT COUNT(?uri) WHERE {" + where_clauses[0] + "}"
+                elif query_intention == "ASK":
+                    new_s = "ASK WHERE {" + where_clauses[0] + "}"
+                else:
+                    new_s = "SELECT DISTINCT ?uri WHERE {" + where_clauses[0] + "}"
+                for x in rel.split(";"):
+                    k, v = x.split("#")
+                    new_s = new_s.replace("?" + k, "<" + v + ">")
+                grounded_sparqls.add(new_s)
+        grounded_sparqls = list(grounded_sparqls)
         return grounded_sparqls
 
+
+stop_rels = [
+    "http://dbpedia.org/property/firstLeader",
+    "http://dbpedia.org/property/leaderParty",
+    "http://dbpedia.org/property/upperAge",
+    "http://dbpedia.org/property/line",
+    "http://dbpedia.org/property/politicalPartyInLegislature",
+    "http://dbpedia.org/property/isPartOf",
+    "http://dbpedia.org/property/mouthRegion",
+    "http://dbpedia.org/property/class",
+    "http://dbpedia.org/property/monarch",
+    "http://dbpedia.org/ontology/firstLeader",
+    "http://dbpedia.org/ontology/leaderParty",
+    "http://dbpedia.org/ontology/upperAge",
+    "http://dbpedia.org/ontology/line",
+    "http://dbpedia.org/ontology/politicalPartyInLegislature",
+    "http://dbpedia.org/ontology/isPartOf",
+    "http://dbpedia.org/ontology/mouthRegion",
+    "http://dbpedia.org/ontology/class",
+
+    "<http://dbpedia.org/property/formercoach>",
+    "<http://dbpedia.org/ontology/artist>",
+    "<http://dbpedia.org/property/restingplace>",
+    "<http://dbpedia.org/ontology/owningOrganisation>",
+    "<http://dbpedia.org/property/nationality>",
+    "<http://dbpedia.org/property/origin>",
+    "<http://dbpedia.org/ontology/format>",
+    "<http://dbpedia.org/property/rank>",
+    "<http://dbpedia.org/ontology/illustrator>",
+]

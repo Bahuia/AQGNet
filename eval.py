@@ -21,11 +21,11 @@ import pargs
 from rules.grammar import AbstractQueryGraph
 from data_loaders import GenerationDataLoader
 from models.model import AQGNet
-from utils.utils import kb_constraint, formalize_aqg, generate_cand_queries
+from utils.utils import kb_constraint, formalize_aqg
 
 
 if __name__ == '__main__':
-    args = pargs.pargs()
+    args = pargs.generation_pargs()
 
     if not args.cuda:
         args.gpu = -1

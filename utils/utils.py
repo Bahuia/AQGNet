@@ -16,7 +16,6 @@ import torch.nn as nn
 import copy
 import json
 from nltk.stem import WordNetLemmatizer
-import signal, functools
 
 REAL = np.float32
 if sys.version_info[0] >= 3:
@@ -110,6 +109,30 @@ def mk_graph_for_gnn(vertices, v_labels, edges):
         adj[c, b] = 1
     return v_tensor, e_tensor, adj
 
+def split_pooling(tensor, split_lens):
+    data = tensor.split(split_lens.tolist())
+    data = [x.max(dim=0)[0] for x in data]
+    return torch.stack(data, 0)
+
+def split_padding(tensor, split_lens):
+    data = tensor.split(split_lens.tolist())
+    m = max([y.size(0) for y in data])
+    return torch.stack([pad(y, m, 0) for y in data], 0)
+
+def mask_seq(seq, seq_lens):
+    """ users are resposible for shaping
+    Return: tensor_type [B, T]
+    """
+    mask = torch.zeros_like(seq)
+    for i, l in enumerate(seq_lens):
+        mask[i, :l].fill_(1)
+    return mask
+
+def mask_max_pooling(seq, seq_lens):
+    mask = mask_seq(seq, seq_lens)
+    seq = seq.masked_fill(mask == 0, -1e18)
+    return seq.max(dim=1)[0]
+
 def tokenize_by_uppercase(s):
     tokens = []
     last = 0
@@ -118,37 +141,63 @@ def tokenize_by_uppercase(s):
             tokens.append(s[last: i])
             last = i
     tokens.append(s[last: len(s)])
-    return tokens[1:]
+    tokens = [x for x in tokens if x != ""]
+    return tokens
 
+def check_query_equal(query1, query2):
+    r1 = set([" ".join([y for y in x if y not in ["property", "ontology"]]) for x in query1])
+    r2 = set([" ".join([y for y in x if y not in ["property", "ontology"]]) for x in query2])
 
-class TimeoutError(Exception): pass
+    insect_r = r1 & r2
+    exp_r1 = list(r1 - insect_r)
+    exp_r2 = list(r2 - insect_r)
 
+    if len(exp_r1) == 1 and len(exp_r2) == 1:
+        if (exp_r1[0][0] == "+" or exp_r1[0][0] == "-") \
+            and (exp_r2[0][0] == "+" or exp_r2[0][0] == "-"):
+            tmp_r1 = "".join(exp_r1[0][2:].split(" ")).lower()
+            tmp_r2 = "".join(exp_r2[0][2:].split(" ")).lower()
 
-def timeout(seconds, error_message="Timeout Error: the cmd 30s have not finished."):
-    def decorated(func):
-        result = ""
+            tmp = set([tmp_r1, tmp_r2])
+            flag = False
+            for rel in rel_dict:
+                if len(tmp & rel) == len(tmp | rel):
+                    flag = True
+                    break
+            if flag:
+                return True
 
-        def _handle_timeout(signum, frame):
-            global result
-            result = "TimeOut"
-            raise TimeoutError(error_message)
+    if len(insect_r) == len(r1) and len(insect_r) == len(r2):
+        return True
+    return False
 
-        def wrapper(*args, **kwargs):
-            global result
-            signal.signal(signal.SIGALRM, _handle_timeout)
-            signal.alarm(seconds)
+def check_in(query, query_list):
+    for q in query_list:
+        if check_query_equal(query, q):
+            return True
+    return False
 
-            try:
-                result = func(*args, **kwargs)
-            finally:
-                signal.alarm(0)
-                return result
-            return result
+def check_relation(rel):
+    if rel.find("http://dbpedia.org/property/") != -1 or \
+        rel.find("http://dbpedia.org/ontology/") != -1:
+        return True
+    return False
 
-        return functools.wraps(func)(wrapper)
-    return decorated
+def cal_score(pred_answers, gold_answers):
+    tp = 0.
+    for a in pred_answers:
+        if a in gold_answers:
+            tp += 1
+    if tp == 0:
+        return (0., 0., 0.)
+    p = 1.0 * tp / len(pred_answers)
+    r = 1.0 * tp / len(gold_answers)
+    f1 = 2.0 * p / (p + r) * r
+    return (p, r, f1)
 
 def formalize_aqg(aqg, data):
+
+    cand_types = ["<" + x + ">" for x in data["cand_types"]]
 
     type_v = -1
     for v, label in aqg.v_labels.items():
@@ -160,8 +209,6 @@ def formalize_aqg(aqg, data):
     for v, label in aqg.v_labels.items():
         if label == 2:
             ent_v_num += 1
-
-    cand_types = ["<" + x + ">" for x in data["cand_types"]]
 
     if type_v == -1:
         if len(cand_types) > 0 and ent_v_num == 1:
@@ -199,6 +246,7 @@ def formalize_aqg(aqg, data):
             aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index + 3:]
     return aqg
 
+
 def kb_constraint(aqg, data, kb_endpoint):
 
     cand_vertices = {2: []}
@@ -211,7 +259,6 @@ def kb_constraint(aqg, data, kb_endpoint):
     cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
 
     grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
-
     if len(grounding_res) == 0:
         # type
         type_v = -1
@@ -240,8 +287,6 @@ def kb_constraint(aqg, data, kb_endpoint):
             aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index+3:]
 
     print(data["id"], len(grounding_res))
-    # for x in grounding_res:
-    #     print(x)
     return aqg
 
 def generate_cand_queries(aqg, data, kb_endpoint):
@@ -362,3 +407,13 @@ def load_word2vec_format(filename, word_idx, binary=False, normalize=False,
         # each row normalize to 1
         word_matrix = torch.renorm(word_matrix, 2, 0, 1)
     return word_matrix, vector_size, vocab
+
+
+rel_dict = [
+    ["deathplace", "placeofdeath"],
+    ["placeofbirth", "birthplace"],
+    ["awards", "award"],
+    ["writer", "author"],
+    ["products", "product"],
+    ["notableworks", "notablework"]
+]
