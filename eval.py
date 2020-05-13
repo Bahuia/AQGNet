@@ -66,16 +66,9 @@ if __name__ == '__main__':
             pred_aqg = kb_constraint(aqg, data, args.kb_endpoint)
 
         is_correct = pred_aqg.is_equal(data["gold_aqg"])
+        data["pred_aqg"] = pred_aqg
 
-        cand_queries = generate_cand_queries(pred_aqg, data, args.kb_endpoint)
-
-        query_res = {
-            "id": data["id"],
-            "question": data["question"],
-            "query": data["query"],
-            "cand_queries": cand_queries
-        }
-        query_list.append(query_res)
+        query_list.append(data)
 
         n_q_correct += is_correct
         n_q_total += 1
@@ -85,7 +78,7 @@ if __name__ == '__main__':
 
     checkpoint_dir = '/'.join(args.cpt.split('/')[:-2])
 
-    results_path = os.path.join(checkpoint_dir, 'candidate_queries.json')
-    json.dump(query_list, open(results_path, "w"), indent=4)
+    results_path = os.path.join(checkpoint_dir, 'results.pkl')
+    pickle.dump(query_list, open(results_path, "wb"))
     print("Results save to \"{}\"\n".format(results_path))
 

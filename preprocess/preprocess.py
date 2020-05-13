@@ -40,12 +40,15 @@ def preprocess(datas):
         if d["entity2_mention"] != "":
             question = question.replace(d["entity2_mention"].lower(), "<e>")
 
+        question = question.replace(",", " ,")
         question = question.replace("?", " ?")
+        question = question.replace("'", " '")
         question = question.replace("'s", " 's")
         question = question.replace("'re", " 're")
 
         question_toks = question.split(" ")
-        question_toks = [wordnet_lemmatizer.lemmatize(x) for x in question_toks if x not in stop_words]
+        question_toks = [wordnet_lemmatizer.lemmatize(x.strip(" ")) for x in question_toks if x not in stop_words]
+        question_toks = ["university" if x == "universit" else x for x in question_toks]
 
         d["question_toks"] = question_toks
 

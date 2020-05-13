@@ -45,11 +45,11 @@ def pargs():
     parser.add_argument('--word_normalize', action='store_true')
 
     parser.add_argument('--train_data', type=str, default=os.path.abspath('./data/processed_train.pkl'))
+    parser.add_argument('--valid_data', type=str, default=os.path.abspath('./data/processed_valid.pkl'))
     parser.add_argument('--test_data', type=str, default=os.path.abspath('./data/processed_test.pkl'))
-    parser.add_argument('--valid_proportion', type=float, default=0.1)
 
     parser.add_argument('--wo_vocab', type=str, default=os.path.abspath('./vocab/word_vocab.pkl'))
-    parser.add_argument('--not_glove', action='store_false', help='do not use GloVe', dest='golve')
+    parser.add_argument('--not_glove', action='store_false', help='do not use GloVe', dest='glove')
     parser.add_argument('--glove_path', type=str, default=os.path.abspath(''))
     parser.add_argument('--random_init_words', type=str,
                         default=os.path.abspath('./vocab/random_init_words.json'))

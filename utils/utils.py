@@ -16,6 +16,7 @@ import torch.nn as nn
 import copy
 import json
 from nltk.stem import WordNetLemmatizer
+import signal, functools
 
 REAL = np.float32
 if sys.version_info[0] >= 3:
@@ -119,15 +120,35 @@ def tokenize_by_uppercase(s):
     tokens.append(s[last: len(s)])
     return tokens[1:]
 
+
+class TimeoutError(Exception): pass
+
+
+def timeout(seconds, error_message="Timeout Error: the cmd 30s have not finished."):
+    def decorated(func):
+        result = ""
+
+        def _handle_timeout(signum, frame):
+            global result
+            result = "TimeOut"
+            raise TimeoutError(error_message)
+
+        def wrapper(*args, **kwargs):
+            global result
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+                return result
+            return result
+
+        return functools.wraps(func)(wrapper)
+    return decorated
+
 def formalize_aqg(aqg, data):
-    cand_vertices = {2: []}
-
-    if data["entity1_uri"] != "":
-        cand_vertices[2].append("<" + data["entity1_uri"] + ">")
-    if data["entity2_uri"] != "":
-        cand_vertices[2].append("<" + data["entity2_uri"] + ">")
-
-    cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
 
     type_v = -1
     for v, label in aqg.v_labels.items():
@@ -140,44 +161,43 @@ def formalize_aqg(aqg, data):
         if label == 2:
             ent_v_num += 1
 
-    # no type vertex but have type candidates
-    if len(cand_vertices[3]) > 0 and type_v == -1 and \
-            ent_v_num == 1:
-        if len(aqg.edges) >= 4:
-            v_add = len(aqg.vertices)
-            aqg.add_vertex(v_add, 3)
-            assert aqg.v_labels[1] == 1
-            aqg.add_edge(1, v_add, 2)
-            aqg.pred_obj_labels.extend([3, 1, 2])
-        else:
-            # pass
-            v_add = len(aqg.vertices)
-            aqg.add_vertex(v_add, 3)
-            assert aqg.v_labels[0] == 0
-            aqg.add_edge(0, v_add, 2)
-            aqg.pred_obj_labels.extend([3, 0, 2])
+    cand_types = ["<" + x + ">" for x in data["cand_types"]]
 
-    # no type candidates but have type vertex
-    if type_v != -1 and len(cand_vertices[3]) == 0:
-        attached_u = -1
-        for v1, v2, e_label in aqg.edges:
-            if v1 == type_v:
-                attached_u = v2
-                break
-        assert attached_u != -1
+    if type_v == -1:
+        if len(cand_types) > 0 and ent_v_num == 1:
+            if len(aqg.edges) >= 4:
+                v_add = len(aqg.vertices)
+                aqg.add_vertex(v_add, 3)
+                assert aqg.v_labels[1] == 1
+                aqg.add_edge(1, v_add, 2)
+                aqg.pred_obj_labels.extend([3, 1, 2])
+            else:
+                # pass
+                v_add = len(aqg.vertices)
+                aqg.add_vertex(v_add, 3)
+                assert aqg.v_labels[0] == 0
+                aqg.add_edge(0, v_add, 2)
+                aqg.pred_obj_labels.extend([3, 0, 2])
+    else:
+        if len(cand_types) == 0:
+            attached_u = -1
+            for v1, v2, e_label in aqg.edges:
+                if v1 == type_v:
+                    attached_u = v2
+                    break
+            assert attached_u != -1
 
-        aqg.remove_edge(attached_u, type_v)
-        aqg.vertices.remove(type_v)
-        aqg.v_labels.pop(type_v)
+            aqg.remove_edge(attached_u, type_v)
+            aqg.vertices.remove(type_v)
+            aqg.v_labels.pop(type_v)
 
-        pred_obj_labels = [x for x in aqg.pred_obj_labels]
-        type_label_index = -1
-        for i, obj in enumerate(pred_obj_labels):
-            if i % 3 == 1 and obj == 3:
-                type_label_index = i
-        aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index + 3:]
+            pred_obj_labels = [x for x in aqg.pred_obj_labels]
+            type_label_index = -1
+            for i, obj in enumerate(pred_obj_labels):
+                if i % 3 == 1 and obj == 3:
+                    type_label_index = i
+            aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index + 3:]
     return aqg
-
 
 def kb_constraint(aqg, data, kb_endpoint):
 
@@ -191,6 +211,7 @@ def kb_constraint(aqg, data, kb_endpoint):
     cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
 
     grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
+
     if len(grounding_res) == 0:
         # type
         type_v = -1
@@ -219,6 +240,8 @@ def kb_constraint(aqg, data, kb_endpoint):
             aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index+3:]
 
     print(data["id"], len(grounding_res))
+    # for x in grounding_res:
+    #     print(x)
     return aqg
 
 def generate_cand_queries(aqg, data, kb_endpoint):

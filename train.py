@@ -23,7 +23,6 @@ import pargs
 from rules.grammar import AbstractQueryGraph
 from data_loaders import GenerationDataLoader
 from models.model import AQGNet
-from utils.utils import formalize_aqg
 
 
 if __name__ == '__main__':
@@ -40,22 +39,19 @@ if __name__ == '__main__':
     wo_vocab = pickle.load(open(args.wo_vocab, 'rb'))
     print("load word vocab, size: %d" % len(wo_vocab))
 
-    datas = pickle.load(open(args.train_data, "rb"))
+    train_datas = pickle.load(open(args.train_data, "rb"))
     if args.shuffle:
-        random.shuffle(datas)
-    n_valid = max(1, math.floor(len(datas) * args.valid_proportion))
-    n_train = len(datas) - n_valid
-    assert n_train >= 1 and n_valid >= 1
-    train_datas = datas[:n_train]
-    valid_datas = datas[n_train:]
+        random.shuffle(train_datas)
 
     train_loader = GenerationDataLoader(args)
     train_loader.load_data(train_datas, args.bs, use_small=args.use_small, shuffle=args.shuffle)
     print("Load training data from \"%s\"."% (args.train_data))
     print("training data, batch size: %d, batch number: %d" % (args.bs, train_loader.n_batch))
 
+    valid_datas = pickle.load(open(args.valid_data, "rb"))
     valid_loader = GenerationDataLoader(args)
     valid_loader.load_data(valid_datas, bs=1, use_small=args.use_small, shuffle=False)
+    print("Load valid data from \"%s\"." % (args.valid_data))
     print("valid data, batch size: %d, batch number: %d" % (1, valid_loader.n_batch))
 
     model = AQGNet(wo_vocab, args)
@@ -64,7 +60,7 @@ if __name__ == '__main__':
         print('Shift model to GPU.\n')
 
     # load pretrain embeddings.
-    if args.golve:
+    if args.glove:
         print('Loading pretrained word vectors from \"%s\" ...' % (args.glove_path))
         if os.path.isfile(args.emb_cache):
             pretrained_emb = torch.load(args.emb_cache)
@@ -151,8 +147,6 @@ if __name__ == '__main__':
         for s in valid_loader.next_batch():
             data = s[-1][0]
             pred_aqg, action_probs = model.generation(s[:-1])
-
-            pred_aqg = formalize_aqg(pred_aqg, data)
 
             if pred_aqg.is_equal(data["gold_aqg"]):
                 val_n_q_correct += 1
