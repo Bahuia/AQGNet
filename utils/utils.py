@@ -144,9 +144,9 @@ def tokenize_by_uppercase(s):
     tokens = [x for x in tokens if x != ""]
     return tokens
 
-def check_query_equal1(query1, query2):
-    r1 = set([" ".join([y for y in x]) for x in query1])
-    r2 = set([" ".join([y for y in x]) for x in query2])
+def check_query_equal(query1, query2):
+    r1 = set([" ".join([y for y in x if y not in ["property", "ontology"]]) for x in query1])
+    r2 = set([" ".join([y for y in x if y not in ["property", "ontology"]]) for x in query2])
 
     insect_r = r1 & r2
 

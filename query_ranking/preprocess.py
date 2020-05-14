@@ -67,7 +67,7 @@ def parse_query(query):
     relations = []
     for triple in triples:
         s, p, o = triple.split(" ")
-        if p == "rdf:type":
+        if p == "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>":
             types.append(parse_type(o))
         else:
             rel_direction = cmp_priority(s, o)

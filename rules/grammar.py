@@ -366,4 +366,12 @@ stop_rels = [
     "<http://dbpedia.org/ontology/format>",
     "<http://dbpedia.org/property/rank>",
     "<http://dbpedia.org/ontology/illustrator>",
+
+    "<http://dbpedia.org/ontology/citizenship>",
+    "<http://dbpedia.org/ontology/occupation>",
+
+    "<http://dbpedia.org/property/trainer>",
+    "<http://dbpedia.org/ontology/foundationPlace>",
+    "<http://dbpedia.org/property/placeOfBirth>",
+    "<http://dbpedia.org/ontology/language>",
 ]
