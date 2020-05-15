@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
     iters = 0
     start = time.time()
-    best_val_acc = 0
+    best_val_f1 = 0
 
     header = '\n  Time Epoch         Loss        Valid_F1'
     val_log_template = ' '.join(
@@ -172,10 +172,10 @@ if __name__ == '__main__':
         print(val_log_template.format(time.time() - start, epoch, avg_loss, val_f1))
 
         # update checkpoint.
-        if val_acc >= best_val_acc:
-            best_val_acc = val_acc
+        if val_f1 >= best_val_f1:
+            best_val_f1 = val_f1
             snapshot_path = best_snapshot_prefix + \
-                            '_epoch_{}_best_val_acc_{}_model.pt'.format(epoch, best_val_acc)
+                            '_epoch_{}_best_val_f1_{}_model.pt'.format(epoch, best_val_f1)
             # save model, delete previous 'best_snapshot' files.
             torch.save(model.state_dict(), snapshot_path)
             for f in glob.glob(best_snapshot_prefix + '*'):
@@ -183,4 +183,4 @@ if __name__ == '__main__':
                     os.remove(f)
 
     print('\nTraining finished.')
-    print("\nBest F1-score: {:.2f}\nModel writing to \"{}\"\n".format(best_val_acc, out_dir))
+    print("\nBest F1-score: {:.2f}\nModel writing to \"{}\"\n".format(best_val_f1, out_dir))
