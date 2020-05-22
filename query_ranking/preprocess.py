@@ -20,7 +20,7 @@ from nltk.stem import WordNetLemmatizer
 
 sys.path.append("..")
 from utils.dictionary import init_vocab
-from utils.utils import tokenize_by_uppercase
+from utils.utils import tokenize_by_uppercase, get_rels_from_query
 
 
 p_where = re.compile(r'[{](.*?)[}]', re.S)
@@ -97,22 +97,20 @@ def cmp_queries(query1, query2):
         return True
     return False
 
+rel_pool = json.load(open("../data/relation_pool.json"))
+
 def filter(cand_queries):
     new_cand_queries = []
     for query in cand_queries:
-        where_clauses = re.findall(p_where, query)[0]
-        where_clauses = where_clauses.strip(" ").strip(".").strip(" ")
-        triples = [[y.strip(" ") for y in x.strip(" ").split(" ") if y != ""]
-                   for x in where_clauses.split(". ")]
-        rels = []
-        type = None
-        for t in triples:
-            rels.append(t[1].lower()[t[1].rfind("/") + 1:len(t[1])-1])
-            if t[1] == "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>":
-                type = t[-1].lower()[t[-1].rfind("/") + 1:len(t[-1])-1]
-        if type in rels:
-            if type not in ["species"]:
-                continue
+        flag = True
+        rels = get_rels_from_query(query)
+        for rel in rels:
+            rel = rel.strip("<").strip(">")
+            if rel not in rel_pool:
+                flag = False
+                break
+        if not flag:
+            continue
         new_cand_queries.append(query)
     return new_cand_queries
 
@@ -123,7 +121,7 @@ def preprocess(datas, training=False):
         triples = get_triples_from_query(d["query"])
         d["query"] = select_clause + "{ " + " . ".join(triples) +  " }"
 
-        d["cand_queries"] = filter(d["cand_queries"])
+        # d["cand_queries"] = filter(d["cand_queries"])
 
         if training:
             d["cand_queries"] = [x for x in d["cand_queries"] if not cmp_queries(x, d["query"])]

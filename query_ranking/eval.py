@@ -75,18 +75,17 @@ if __name__ == '__main__':
         gold_is_count = "COUNT" in gold_query
         gold_is_ask = "ASK" in gold_query
 
-        if data["id"] in [4084, 4112, 4418, 4459, 4553, 4620, 4738, 4822, 4983, 4991,
-                          4542, 4610,
-                          4343]:
-            continue
-
         if pred_is_ask == gold_is_ask and pred_is_count == gold_is_count \
                 and check_query_equal(pred_processed_query, gold_processed_query):
             p, r, f1 = 1.0, 1.0, 1.0
         else:
-            pred_answers = query_answers(pred_query, args.kb_endpoint)
-            gold_answers = query_answers(gold_query, args.kb_endpoint)
-            p, r, f1 = cal_score(pred_answers, gold_answers)
+            try:
+                pred_answers = query_answers(pred_query, args.kb_endpoint)
+                gold_answers = query_answers(gold_query, args.kb_endpoint)
+            except:
+                p, r, f1 = 0.0, 0.0, 0.0
+            else:
+                p, r, f1 = cal_score(pred_answers, gold_answers)
 
         avg_p += p
         avg_r += r

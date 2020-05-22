@@ -96,9 +96,9 @@ if __name__ == '__main__':
 
     iters = 0
     start = time.time()
-    best_val_f1 = 0
+    best_val_acc = 0
 
-    header = '\n  Time Epoch         Loss        Valid_F1'
+    header = '\n  Time Epoch         Loss        Valid_Acc'
     val_log_template = ' '.join(
         '{:>6.0f},{:>5.0f},{:>12.6f},{:16.4f}'.split(','))
     best_snapshot_prefix = os.path.join(checkpoint_dir, 'best_snapshot')
@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
         model.eval()
 
-        val_f1 = 0
+        val_acc = 0
         val_n_total = 0
         for s in valid_loader.next_batch():
             data = s[-1][0]
@@ -158,24 +158,19 @@ if __name__ == '__main__':
 
             if pred_is_ask == gold_is_ask and pred_is_count == gold_is_count \
                     and check_query_equal(pred_processed_query, gold_processed_query):
-                p, r, f1 = 1.0, 1.0, 1.0
-            else:
-                pred_answers = query_answers(pred_query, args.kb_endpoint)
-                gold_answers = query_answers(gold_query, args.kb_endpoint)
-                p, r, f1 = cal_score(pred_answers, gold_answers)
+                val_acc += 1.0
 
-            val_f1 += f1
             val_n_total += 1
 
-        val_f1 = val_f1 * 100. / val_n_total
+        val_acc = val_acc * 100. / val_n_total
 
-        print(val_log_template.format(time.time() - start, epoch, avg_loss, val_f1))
+        print(val_log_template.format(time.time() - start, epoch, avg_loss, val_acc))
 
         # update checkpoint.
-        if val_f1 >= best_val_f1:
-            best_val_f1 = val_f1
+        if val_acc >= best_val_acc:
+            best_val_acc = val_acc
             snapshot_path = best_snapshot_prefix + \
-                            '_epoch_{}_best_val_f1_{}_model.pt'.format(epoch, best_val_f1)
+                            '_epoch_{}_best_val_acc_{}_model.pt'.format(epoch, best_val_acc)
             # save model, delete previous 'best_snapshot' files.
             torch.save(model.state_dict(), snapshot_path)
             for f in glob.glob(best_snapshot_prefix + '*'):
@@ -183,4 +178,4 @@ if __name__ == '__main__':
                     os.remove(f)
 
     print('\nTraining finished.')
-    print("\nBest F1-score: {:.2f}\nModel writing to \"{}\"\n".format(best_val_f1, out_dir))
+    print("\nBest query graph acc: {:.2f}\nModel writing to \"{}\"\n".format(best_val_acc, out_dir))

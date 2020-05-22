@@ -11,18 +11,18 @@
 import re
 import sys
 import copy
+import json
 import numpy as np
 import itertools
 from collections import deque, namedtuple
 
 sys.path.append("..")
 from utils.query_interface import DBpedia_query
-from utils.utils import check_relation
+
 
 Edge = namedtuple('Edge', 'start, end, label')
 
 end_id = 4
-
 
 class AbstractQueryGraph:
     """
@@ -251,6 +251,7 @@ class AbstractQueryGraph:
         vertex_maps = [{k:v for k, v in x} for x in vertex_maps]
 
         sparql_patterns = self.mk_patterns(0)
+        rel_pool = json.load(open("./data/relation_pool.json"))
 
         # first grounding: fill vertices into patterns
         conds_set = set()
@@ -315,7 +316,7 @@ class AbstractQueryGraph:
                     continue
                 flag = True
                 for k, v in res.items():
-                    if not check_relation(v) or v in stop_rels:
+                    if v not in rel_pool:
                         flag = False
                         break
                 if not flag:
@@ -336,42 +337,3 @@ class AbstractQueryGraph:
                 grounded_sparqls.add(new_s)
         grounded_sparqls = list(grounded_sparqls)
         return grounded_sparqls
-
-
-stop_rels = [
-    "http://dbpedia.org/property/firstLeader",
-    "http://dbpedia.org/property/leaderParty",
-    "http://dbpedia.org/property/upperAge",
-    "http://dbpedia.org/property/line",
-    "http://dbpedia.org/property/politicalPartyInLegislature",
-    "http://dbpedia.org/property/isPartOf",
-    "http://dbpedia.org/property/mouthRegion",
-    "http://dbpedia.org/property/class",
-    "http://dbpedia.org/property/monarch",
-    "http://dbpedia.org/ontology/firstLeader",
-    "http://dbpedia.org/ontology/leaderParty",
-    "http://dbpedia.org/ontology/upperAge",
-    "http://dbpedia.org/ontology/line",
-    "http://dbpedia.org/ontology/politicalPartyInLegislature",
-    "http://dbpedia.org/ontology/isPartOf",
-    "http://dbpedia.org/ontology/mouthRegion",
-    "http://dbpedia.org/ontology/class",
-
-    "<http://dbpedia.org/property/formercoach>",
-    "<http://dbpedia.org/ontology/artist>",
-    "<http://dbpedia.org/property/restingplace>",
-    "<http://dbpedia.org/ontology/owningOrganisation>",
-    "<http://dbpedia.org/property/nationality>",
-    "<http://dbpedia.org/property/origin>",
-    "<http://dbpedia.org/ontology/format>",
-    "<http://dbpedia.org/property/rank>",
-    "<http://dbpedia.org/ontology/illustrator>",
-
-    "<http://dbpedia.org/ontology/citizenship>",
-    "<http://dbpedia.org/ontology/occupation>",
-
-    "<http://dbpedia.org/property/trainer>",
-    "<http://dbpedia.org/ontology/foundationPlace>",
-    "<http://dbpedia.org/property/placeOfBirth>",
-    "<http://dbpedia.org/ontology/language>",
-]

@@ -9,6 +9,7 @@
 """
 
 import sys
+import re
 from builtins import range
 import numpy as np
 import torch
@@ -17,10 +18,12 @@ import copy
 import json
 from nltk.stem import WordNetLemmatizer
 
+
 REAL = np.float32
 if sys.version_info[0] >= 3:
     unicode = str
 
+p_where = re.compile(r'[{](.*?)[}]', re.S)
 
 def identity(x):
     return x
@@ -166,6 +169,14 @@ def check_relation(rel):
         return True
     return False
 
+def get_rels_from_query(query):
+    where_clauses = re.findall(p_where, query)[0]
+    where_clauses = where_clauses.strip(" ").strip(".").strip(" ")
+    triples = [[y.strip(" ") for y in x.strip(" ").split(" ") if y != ""]
+               for x in where_clauses.split(". ")]
+    relaions = [x[1] for x in triples if check_relation(x[1])]
+    return relaions
+
 def cal_score(pred_answers, gold_answers):
     tp = 0.
     for a in pred_answers:
@@ -179,9 +190,6 @@ def cal_score(pred_answers, gold_answers):
     return (p, r, f1)
 
 def formalize_aqg(aqg, data):
-
-    cand_types = ["<" + x + ">" for x in data["cand_types"]]
-
     type_v = -1
     for v, label in aqg.v_labels.items():
         if label == 3:
@@ -193,23 +201,23 @@ def formalize_aqg(aqg, data):
         if label == 2:
             ent_v_num += 1
 
+    if data["cand_types"][0][0] == "http://dbpedia.org/ontology/None" \
+        and data["cand_types"][0][1] - data["cand_types"][1][1] > 0.42:
+            data["cand_types"] = []
+    else:
+        data["cand_types"] = [[x, y] for x, y in data["cand_types"]
+                              if x != "http://dbpedia.org/ontology/None"]
+
     if type_v == -1:
-        if len(cand_types) > 0 and ent_v_num == 1:
+        if len(data["cand_types"]) > 0 and ent_v_num == 1:
             if len(aqg.edges) >= 4:
                 v_add = len(aqg.vertices)
                 aqg.add_vertex(v_add, 3)
                 assert aqg.v_labels[1] == 1
                 aqg.add_edge(1, v_add, 2)
                 aqg.pred_obj_labels.extend([3, 1, 2])
-            else:
-                # pass
-                v_add = len(aqg.vertices)
-                aqg.add_vertex(v_add, 3)
-                assert aqg.v_labels[0] == 0
-                aqg.add_edge(0, v_add, 2)
-                aqg.pred_obj_labels.extend([3, 0, 2])
     else:
-        if len(cand_types) == 0:
+        if len(data["cand_types"]) == 0:
             attached_u = -1
             for v1, v2, e_label in aqg.edges:
                 if v1 == type_v:
@@ -227,7 +235,16 @@ def formalize_aqg(aqg, data):
                 if i % 3 == 1 and obj == 3:
                     type_label_index = i
             aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index + 3:]
-    return aqg
+
+    type_v = -1
+    for v, label in aqg.v_labels.items():
+        if label == 3:
+            type_v = v
+            break
+    if type_v == -1:
+        data["cand_types"] = []
+
+    return aqg, data
 
 
 def kb_constraint(aqg, data, kb_endpoint):
@@ -239,9 +256,9 @@ def kb_constraint(aqg, data, kb_endpoint):
     if data["entity2_uri"] != "":
         cand_vertices[2].append("<" + data["entity2_uri"] + ">")
 
-    cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
-
+    cand_vertices[3] = ["<" + x + ">" for x, y in data["cand_types"]]
     grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
+
     if len(grounding_res) == 0:
         # type
         type_v = -1
@@ -269,7 +286,6 @@ def kb_constraint(aqg, data, kb_endpoint):
                     type_label_index = i
             aqg.pred_obj_labels = pred_obj_labels[:type_label_index] + pred_obj_labels[type_label_index+3:]
 
-    print(data["id"], len(grounding_res))
     return aqg
 
 def generate_cand_queries(aqg, data, kb_endpoint):
@@ -280,7 +296,12 @@ def generate_cand_queries(aqg, data, kb_endpoint):
     if data["entity2_uri"] != "":
         cand_vertices[2].append("<" + data["entity2_uri"] + ">")
 
-    cand_vertices[3] = ["<" + x + ">" for x in data["cand_types"]]
+    cand_vertices[3] = []
+    for x in data["cand_types"]:
+        if type(x) == list:
+            cand_vertices[3].append("<" + x[0] + ">")
+        else:
+            cand_vertices[3].append("<" + x + ">")
 
     grounding_res = aqg.grounding(cand_vertices, kb_endpoint)
     return grounding_res

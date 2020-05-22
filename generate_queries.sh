@@ -2,7 +2,7 @@
 
 train_data=./data/processed_train.pkl
 valid_data=./data/processed_valid.pkl
-test_data=./runs/1589126395/results.pkl
+test_data=$1    # structure results path
 dbpedia_endpoint=http://10.201.180.179:3030/dbpedia/sparql
 
 
@@ -16,6 +16,7 @@ python generate_queries.py \
 echo "Start generate candidate queries for valid data ..."
 python generate_queries.py \
 --data_path ${valid_data} \
+--use_gold_structure \
 --kb_endpoint ${dbpedia_endpoint} \
 --output ./data/valid_candidate_queries/
 

@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         pred_aqg, action_probs = model.generation(s[:-1])
 
-        pred_aqg = formalize_aqg(pred_aqg, data)
+        pred_aqg, data = formalize_aqg(pred_aqg, data)
 
         if args.kb_constraint:
             pred_aqg = kb_constraint(aqg, data, args.kb_endpoint)
