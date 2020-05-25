@@ -164,11 +164,11 @@
         "entity2_mention": "arctic ocean",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/River",
-                0.6479250192642212
+                "http://dbpedia.org/ontology/None",
+                0.6579250192642212
             ],
             [
-                "http://dbpedia.org/ontology/None",
+                "http://dbpedia.org/ontology/River",
                 0.22809633612632751
             ],
             [
@@ -1006,7 +1006,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.45357149839401245
+                0.10357149839401245
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
@@ -1249,12 +1249,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Film",
+                "http://dbpedia.org/ontology/None",
                 0.5713706612586975
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.36476898193359375
+                "http://dbpedia.org/ontology/Film",
+                0.14476898193359375
             ],
             [
                 "http://dbpedia.org/ontology/VideoGame",
@@ -1498,23 +1498,23 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4628613591194153
+                0.6728613591194153
             ],
             [
                 "http://dbpedia.org/ontology/Sport",
-                0.3432144224643707
+                0.2032144224643707
             ],
             [
                 "http://dbpedia.org/ontology/Play",
-                0.27201777696609497
+                0.17201777696609497
             ],
             [
                 "http://dbpedia.org/ontology/SportsTeam",
-                0.21394763886928558
+                0.11394763886928558
             ],
             [
                 "http://dbpedia.org/ontology/SoccerPlayer",
-                0.1908639818429947
+                0.0908639818429947
             ]
         ]
     },
@@ -2459,15 +2459,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.46583110094070435
+                0.66583110094070435
             ],
             [
                 "http://dbpedia.org/ontology/Film",
-                0.38045844435691833
+                0.19045844435691833
             ],
             [
                 "http://dbpedia.org/ontology/City",
-                0.19692960381507874
+                0.18692960381507874
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -2680,7 +2680,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Award",
-                0.2667953670024872
+                0.1667953670024872
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -2768,11 +2768,11 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/None",
+                "http://dbpedia.org/ontology/Software",
                 0.6902343034744263
             ],
             [
-                "http://dbpedia.org/ontology/Work",
+                "http://dbpedia.org/ontology/None",
                 0.04598799720406532
             ],
             [
@@ -2897,11 +2897,11 @@
             ],
             [
                 "http://dbpedia.org/ontology/Location",
-                0.22252878546714783
+                0.18252878546714783
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.18236951529979706
+                0.14236951529979706
             ],
             [
                 "http://dbpedia.org/ontology/Website",
@@ -3238,7 +3238,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.22768501937389374
+                0.12768501937389374
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballPlayer",
@@ -3451,15 +3451,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5411574244499207
+                0.6411574244499207
             ],
             [
                 "http://dbpedia.org/ontology/Region",
-                0.36243295669555664
+                0.16243295669555664
             ],
             [
                 "http://dbpedia.org/ontology/AdministrativeRegion",
-                0.2464624047279358
+                0.1464624047279358
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -3544,15 +3544,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4454871416091919
+                0.6454871416091919
             ],
             [
                 "http://dbpedia.org/ontology/Band",
-                0.39760908484458923
+                0.19760908484458923
             ],
             [
                 "http://dbpedia.org/ontology/Album",
-                0.3871125280857086
+                0.1871125280857086
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -3761,15 +3761,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4952371418476105
+                0.6152371418476105
             ],
             [
                 "http://dbpedia.org/ontology/Organisation",
-                0.371951162815094
+                0.171951162815094
             ],
             [
                 "http://dbpedia.org/ontology/OrganisationMember",
-                0.213107630610466
+                0.113107630610466
             ],
             [
                 "http://dbpedia.org/ontology/PublicTransitSystem",
@@ -4695,7 +4695,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.3122859299182892
+                0.1122859299182892
             ],
             [
                 "http://dbpedia.org/ontology/BodyOfWater",
@@ -4788,15 +4788,15 @@
             ],
             [
                 "http://dbpedia.org/ontology/Award",
-                0.24408863484859467
+                0.14408863484859467
             ],
             [
                 "http://dbpedia.org/ontology/Film",
-                0.20792005956172943
+                0.12792005956172943
             ],
             [
                 "http://dbpedia.org/ontology/Writer",
-                0.12598930299282074
+                0.10598930299282074
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -5063,15 +5063,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5412427186965942
+                0.5712427186965942
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
-                0.23723581433296204
+                0.13723581433296204
             ],
             [
                 "http://dbpedia.org/ontology/OrganisationMember",
-                0.14666961133480072
+                0.12666961133480072
             ],
             [
                 "http://dbpedia.org/ontology/PublicTransitSystem",
@@ -5408,23 +5408,23 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.41676878929138184
+                0.61676878929138184
             ],
             [
                 "http://dbpedia.org/ontology/SportsLeague",
-                0.2747398316860199
+                0.1747398316860199
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballLeague",
-                0.20270903408527374
+                0.14270903408527374
             ],
             [
                 "http://dbpedia.org/ontology/SpeedwayLeague",
-                0.20220598578453064
+                0.14220598578453064
             ],
             [
                 "http://dbpedia.org/ontology/SoccerClub",
-                0.17885185778141022
+                0.07885185778141022
             ]
         ]
     },
@@ -5532,19 +5532,19 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4186739921569824
+                0.6186739921569824
             ],
             [
                 "http://dbpedia.org/ontology/Artist",
-                0.2666393220424652
+                0.1666393220424652
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.25125423073768616
+                0.15625423073768616
             ],
             [
                 "http://dbpedia.org/ontology/MusicalArtist",
-                0.1620345115661621
+                0.1520345115661621
             ],
             [
                 "http://dbpedia.org/ontology/GovernmentAgency",
@@ -6151,11 +6151,11 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Person",
+                "http://dbpedia.org/ontology/None",
                 0.739199161529541
             ],
             [
-                "http://dbpedia.org/ontology/None",
+                "http://dbpedia.org/ontology/Person",
                 0.25047191977500916
             ],
             [
@@ -6214,11 +6214,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5404098033905029
+                0.6404098033905029
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.3842676281929016
+                0.1842676281929016
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -6311,7 +6311,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Website",
-                0.16994720697402954
+                0.12994720697402954
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -6462,7 +6462,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.3964014947414398
+                0.6964014947414398
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -7334,7 +7334,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
-                0.1873900294303894
+                0.1073900294303894
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -7489,7 +7489,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Work",
-                0.27252060174942017
+                0.17252060174942017
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -7980,16 +7980,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/TelevisionShow",
-                0.42458370327949524
+                "http://dbpedia.org/ontology/None",
+                0.62458370327949524
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.2643212080001831
+                "http://dbpedia.org/ontology/TelevisionShow",
+                0.1643212080001831
             ],
             [
                 "http://dbpedia.org/ontology/ComicsCharacter",
-                0.24868173897266388
+                0.14868173897266388
             ],
             [
                 "http://dbpedia.org/ontology/FictionalCharacter",
@@ -8228,12 +8228,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Person",
+                "http://dbpedia.org/ontology/None",
                 0.6580978631973267
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.29770225286483765
+                "http://dbpedia.org/ontology/Person",
+                0.19770225286483765
             ],
             [
                 "http://dbpedia.org/ontology/Single",
@@ -8507,16 +8507,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/City",
-                0.46454358100891113
+                "http://dbpedia.org/ontology/None",
+                0.66454358100891113
             ],
             [
                 "http://dbpedia.org/ontology/None",
-                0.35274025797843933
+                0.15274025797843933
             ],
             [
                 "http://dbpedia.org/ontology/Town",
-                0.1581861525774002
+                0.1481861525774002
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -8729,11 +8729,11 @@
             ],
             [
                 "http://dbpedia.org/ontology/None",
-                0.2547706067562103
+                0.1547706067562103
             ],
             [
                 "http://dbpedia.org/ontology/Valley",
-                0.21992023289203644
+                0.11992023289203644
             ],
             [
                 "http://dbpedia.org/ontology/BodyOfWater",
@@ -8848,11 +8848,11 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Company",
+                "http://dbpedia.org/ontology/None",
                 0.5109590888023376
             ],
             [
-                "http://dbpedia.org/ontology/None",
+                "http://dbpedia.org/ontology/Company",
                 0.29979032278060913
             ],
             [
@@ -9190,15 +9190,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.48602864146232605
+                0.68602864146232605
             ],
             [
                 "http://dbpedia.org/ontology/Award",
-                0.33142220973968506
+                0.20142220973968506
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.2956198453903198
+                0.1956198453903198
             ],
             [
                 "http://dbpedia.org/ontology/Work",
@@ -9313,16 +9313,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Country",
-                0.5702477097511292
+                "http://dbpedia.org/ontology/None",
+                0.5902477097511292
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3508703410625458
+                "http://dbpedia.org/ontology/Country",
+                0.1508703410625458
             ],
             [
                 "http://dbpedia.org/ontology/Currency",
-                0.17227871716022491
+                0.14227871716022491
             ],
             [
                 "http://dbpedia.org/ontology/TradeUnion",
@@ -9335,7 +9335,7 @@
         ]
     },
     {
-        "id": 4301,
+        "id": 4306,
         "question": "Journals of how many fields can be found in US?",
         "query": "SELECT DISTINCT COUNT(?uri) WHERE { ?x <http://dbpedia.org/property/country> <http://dbpedia.org/resource/United_States> . ?x <http://dbpedia.org/property/discipline> ?uri  . }",
         "entity1_uri": "http://dbpedia.org/resource/United_States",
@@ -9933,12 +9933,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Country",
-                0.4571031332015991
+                "http://dbpedia.org/ontology/None",
+                0.6271031332015991
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.43620651960372925
+                "http://dbpedia.org/ontology/Country",
+                0.13620651960372925
             ],
             [
                 "http://dbpedia.org/ontology/PublicTransitSystem",
@@ -10151,19 +10151,19 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.44621264934539795
+                0.64621264934539795
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
-                0.19494731724262238
+                0.13494731724262238
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.16997987031936646
+                0.12997987031936646
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryUnit",
-                0.15212075412273407
+                0.12212075412273407
             ],
             [
                 "http://dbpedia.org/ontology/PoliticalParty",
@@ -10739,16 +10739,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/President",
-                0.3843604624271393
+                "http://dbpedia.org/ontology/None",
+                0.5843604624271393
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3820696473121643
+                "http://dbpedia.org/ontology/President",
+                0.1520696473121643
             ],
             [
                 "http://dbpedia.org/ontology/Religious",
-                0.17228008806705475
+                0.12228008806705475
             ],
             [
                 "http://dbpedia.org/ontology/PoliticalParty",
@@ -10895,23 +10895,23 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.33906129002571106
+                0.63906129002571106
             ],
             [
                 "http://dbpedia.org/ontology/MemberOfParliament",
-                0.22482073307037354
+                0.16482073307037354
             ],
             [
                 "http://dbpedia.org/ontology/Religious",
-                0.19184163212776184
+                0.14184163212776184
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.1654345691204071
+                0.1354345691204071
             ],
             [
                 "http://dbpedia.org/ontology/OrganisationMember",
-                0.14688439667224884
+                0.11688439667224884
             ]
         ]
     },
@@ -11204,12 +11204,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Person",
-                0.47092339396476746
+                "http://dbpedia.org/ontology/None",
+                0.57092339396476746
             ],
             [
                 "http://dbpedia.org/ontology/None",
-                0.4550098776817322
+                0.1350098776817322
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
@@ -11421,7 +11421,7 @@
         "entity2_mention": "jim harris",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Company",
+                "http://dbpedia.org/ontology/None",
                 0.6456273794174194
             ],
             [
@@ -11429,7 +11429,7 @@
                 0.08752623945474625
             ],
             [
-                "http://dbpedia.org/ontology/None",
+                "http://dbpedia.org/ontology/Company",
                 0.015339971520006657
             ],
             [
@@ -11453,7 +11453,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.561434805393219
+                0.661434805393219
             ],
             [
                 "http://dbpedia.org/ontology/RacingDriver",
@@ -12413,12 +12413,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Person",
-                0.44396016001701355
+                "http://dbpedia.org/ontology/None",
+                0.54396016001701355
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3966354429721832
+                "http://dbpedia.org/ontology/Person",
+                0.0966354429721832
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
@@ -12476,15 +12476,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.49545523524284363
+                0.59545523524284363
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryUnit",
-                0.29101625084877014
+                0.16101625084877014
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
-                0.17402322590351105
+                0.13402322590351105
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryConflict",
@@ -12631,7 +12631,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4290386915206909
+                0.5790386915206909
             ],
             [
                 "http://dbpedia.org/ontology/SportsTeam",
@@ -12941,7 +12941,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.48088809847831726
+                0.68088809847831726
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -13069,7 +13069,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Mountain",
-                0.40450894832611084
+                0.11450894832611084
             ],
             [
                 "http://dbpedia.org/ontology/Valley",
@@ -13189,11 +13189,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4956176280975342
+                0.5956176280975342
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.4460153579711914
+                0.1460153579711914
             ],
             [
                 "http://dbpedia.org/ontology/BodyOfWater",
@@ -13658,7 +13658,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Country",
-                0.14876484870910645
+                0.13876484870910645
             ],
             [
                 "http://dbpedia.org/ontology/PublicTransitSystem",
@@ -13809,11 +13809,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5051846504211426
+                0.5651846504211426
             ],
             [
                 "http://dbpedia.org/ontology/Play",
-                0.17740631103515625
+                0.12740631103515625
             ],
             [
                 "http://dbpedia.org/ontology/FormulaOneRacer",
@@ -14026,7 +14026,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.2686176598072052
+                0.6686176598072052
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -14247,7 +14247,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.20615871250629425
+                0.17615871250629425
             ],
             [
                 "http://dbpedia.org/ontology/VideoGame",
@@ -14583,12 +14583,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/TradeUnion",
-                0.511588990688324
+                "http://dbpedia.org/ontology/None",
+                0.621588990688324
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.29139113426208496
+                "http://dbpedia.org/ontology/TradeUnion",
+                0.19139113426208496
             ],
             [
                 "http://dbpedia.org/ontology/Non-ProfitOrganisation",
@@ -15545,7 +15545,7 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.2839767336845398
+                0.5839767336845398
             ],
             [
                 "http://dbpedia.org/ontology/President",
@@ -16072,15 +16072,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.37995660305023193
+                0.58995660305023193
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.36508479714393616
+                0.16508479714393616
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
-                0.17454595863819122
+                0.11454595863819122
             ],
             [
                 "http://dbpedia.org/ontology/HistoricPlace",
@@ -16536,12 +16536,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/River",
-                0.449032187461853
+                "http://dbpedia.org/ontology/None",
+                0.649032187461853
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.35591742396354675
+                "http://dbpedia.org/ontology/River",
+                0.15591742396354675
             ],
             [
                 "http://dbpedia.org/ontology/BodyOfWater",
@@ -17033,11 +17033,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.513251543045044
+                0.613251543045044
             ],
             [
                 "http://dbpedia.org/ontology/River",
-                0.3820851445198059
+                0.1820851445198059
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -17249,12 +17249,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/PoliticalParty",
+                "http://dbpedia.org/ontology/None",
                 0.5711219906806946
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.4297850728034973
+                "http://dbpedia.org/ontology/PoliticalParty",
+                0.1297850728034973
             ],
             [
                 "http://dbpedia.org/ontology/OrganisationMember",
@@ -17316,7 +17316,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/University",
-                0.27776068449020386
+                0.37776068449020386
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -17932,11 +17932,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5777512788772583
+                0.5977512788772583
             ],
             [
                 "http://dbpedia.org/ontology/Company",
-                0.17819400131702423
+                0.15819400131702423
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -18273,11 +18273,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5280978679656982
+                0.6280978679656982
             ],
             [
                 "http://dbpedia.org/ontology/FictionalCharacter",
-                0.251093327999115
+                0.151093327999115
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -18520,16 +18520,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/School",
-                0.5000426769256592
+                "http://dbpedia.org/ontology/None",
+                0.6000426769256592
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3139328062534332
+                "http://dbpedia.org/ontology/School",
+                0.1139328062534332
             ],
             [
                 "http://dbpedia.org/ontology/Sport",
-                0.20884904265403748
+                0.10884904265403748
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballPlayer",
@@ -19730,11 +19730,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4624420404434204
+                0.6624420404434204
             ],
             [
                 "http://dbpedia.org/ontology/City",
-                0.38495969772338867
+                0.18495969772338867
             ],
             [
                 "http://dbpedia.org/ontology/Town",
@@ -19916,11 +19916,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.45807573199272156
+                0.65807573199272156
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
-                0.24579350650310516
+                0.20579350650310516
             ],
             [
                 "http://dbpedia.org/ontology/BaseballTeam",
@@ -20102,15 +20102,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5490698218345642
+                0.64490698218345642
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.27691158652305603
+                0.17691158652305603
             ],
             [
                 "http://dbpedia.org/ontology/Play",
-                0.20150168240070343
+                0.14150168240070343
             ],
             [
                 "http://dbpedia.org/ontology/SoccerPlayer",
@@ -20757,11 +20757,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5107347965240479
+                0.5507347965240479
             ],
             [
                 "http://dbpedia.org/ontology/Book",
-                0.20516693592071533
+                0.10516693592071533
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballTeam",
@@ -20788,11 +20788,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.4982960820198059
+                0.5982960820198059
             ],
             [
                 "http://dbpedia.org/ontology/AmericanFootballPlayer",
-                0.27241867780685425
+                0.17241867780685425
             ],
             [
                 "http://dbpedia.org/ontology/SoccerPlayer",
@@ -21345,16 +21345,16 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Company",
-                0.4533033072948456
+                "http://dbpedia.org/ontology/None",
+                0.5933033072948456
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.354499876499176
+                "http://dbpedia.org/ontology/Company",
+                0.154499876499176
             ],
             [
                 "http://dbpedia.org/ontology/Website",
-                0.2005024552345276
+                0.1505024552345276
             ],
             [
                 "http://dbpedia.org/ontology/TelevisionShow",
@@ -22183,11 +22183,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.47849857807159424
+                0.57849857807159424
             ],
             [
                 "http://dbpedia.org/ontology/MilitaryPerson",
-                0.17518892884254456
+                0.12518892884254456
             ],
             [
                 "http://dbpedia.org/ontology/Non-ProfitOrganisation",
@@ -22280,7 +22280,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Region",
-                0.3306412398815155
+                0.2306412398815155
             ],
             [
                 "http://dbpedia.org/ontology/PublicTransitSystem",
@@ -22524,11 +22524,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5211500525474548
+                0.6211500525474548
             ],
             [
                 "http://dbpedia.org/ontology/Company",
-                0.33710208535194397
+                0.13710208535194397
             ],
             [
                 "http://dbpedia.org/ontology/Person",
@@ -23701,12 +23701,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/University",
+                "http://dbpedia.org/ontology/None",
                 0.6373745799064636
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.31238824129104614
+                "http://dbpedia.org/ontology/University",
+                0.15238824129104614
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -26403,7 +26403,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.15262815356254578
+                0.12262815356254578
             ],
             [
                 "http://dbpedia.org/ontology/OrganisationMember",
@@ -27731,12 +27731,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/Person",
+                "http://dbpedia.org/ontology/None",
                 0.6286996603012085
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3470344543457031
+                "http://dbpedia.org/ontology/Person",
+                0.2070344543457031
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -28011,11 +28011,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5773791670799255
+                0.5973791670799255
             ],
             [
                 "http://dbpedia.org/ontology/Company",
-                0.3619275689125061
+                0.1619275689125061
             ],
             [
                 "http://dbpedia.org/ontology/Person",
@@ -29064,12 +29064,12 @@
         "entity2_mention": "",
         "cand_types": [
             [
-                "http://dbpedia.org/ontology/River",
-                0.5485360622406006
+                "http://dbpedia.org/ontology/None",
+                0.6485360622406006
             ],
             [
-                "http://dbpedia.org/ontology/None",
-                0.3185310959815979
+                "http://dbpedia.org/ontology/River",
+                0.1985310959815979
             ],
             [
                 "http://dbpedia.org/ontology/Person",
@@ -30398,15 +30398,15 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5583401322364807
+                0.6583401322364807
             ],
             [
                 "http://dbpedia.org/ontology/Award",
-                0.401017963886261
+                0.111017963886261
             ],
             [
                 "http://dbpedia.org/ontology/SportsTeam",
-                0.11126755177974701
+                0.10126755177974701
             ],
             [
                 "http://dbpedia.org/ontology/FormulaOneRacer",
@@ -30553,11 +30553,11 @@
         "cand_types": [
             [
                 "http://dbpedia.org/ontology/None",
-                0.5280951261520386
+                0.6280951261520386
             ],
             [
                 "http://dbpedia.org/ontology/Person",
-                0.4163517951965332
+                0.1163517951965332
             ],
             [
                 "http://dbpedia.org/ontology/Place",
@@ -30650,7 +30650,7 @@
             ],
             [
                 "http://dbpedia.org/ontology/Writer",
-                0.26566314697265625
+                0.36566314697265625
             ],
             [
                 "http://dbpedia.org/ontology/Person",
