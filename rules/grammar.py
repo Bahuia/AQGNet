@@ -18,6 +18,7 @@ from collections import deque, namedtuple
 
 sys.path.append("..")
 from utils.query_interface import DBpedia_query
+from utils.utils import check_relation
 
 
 Edge = namedtuple('Edge', 'start, end, label')
@@ -33,6 +34,7 @@ class AbstractQueryGraph:
         self.edges = []
 
         self.v_labels = dict()
+        self.score = 0.
 
     def get_vertex_pairs(self, v1, v2, both_ends=True):
         if both_ends:
@@ -85,6 +87,8 @@ class AbstractQueryGraph:
         self.cur_v_slc = -1
         self.op_idx = 0
 
+        self.score = 0.
+
     def update_state(self, op, obj):
         """
         :param op:  { "av", "sv", "ae" }
@@ -99,7 +103,21 @@ class AbstractQueryGraph:
             self.cur_v_slc = obj
 
         elif op == "ae":
-            self.add_edge(self.cur_v_slc, self.cur_v_add, obj)
+            if obj == 3:
+                # v_slc --> v_add
+                self.add_edge(v1=self.cur_v_slc, v2=self.cur_v_add,
+                             e_label=3, both_ends=False)
+                self.add_edge(v1=self.cur_v_add, v2=self.cur_v_slc,
+                              e_label=4, both_ends=False)
+            elif obj == 4:
+                # v_add --> v_slc
+                self.add_edge(v1=self.cur_v_add, v2=self.cur_v_slc,
+                              e_label=3, both_ends=False)
+                self.add_edge(v1=self.cur_v_slc, v2=self.cur_v_add,
+                              e_label=4, both_ends=False)
+            else:
+                self.add_edge(v1=self.cur_v_slc, v2=self.cur_v_add,
+                              e_label=obj)
 
         else:
             raise ValueError("Operation \"{}\" is wrong !".format(op))
@@ -115,6 +133,17 @@ class AbstractQueryGraph:
         v_labels = {k:v for k, v in self.v_labels.items()}
         edges = [x for x in self.edges]
         return vertices, v_labels, edges
+
+    def get_obj_range(self, op):
+        if op == "av":
+            return [i for i in range(5)]
+        elif op == "sv":
+            return [v_id for v_id in self.vertices]
+        else:
+            return [i for i in range(5)]
+
+    def update_score(self, score):
+        self.score = score
 
     def is_equal(self, another_aqg):
         """
@@ -173,7 +202,7 @@ class AbstractQueryGraph:
 
     def mk_patterns(self, index):
         """
-        make SPARQL patterns from AQG by dfs, take the direction of edges in account
+        make SPARQL patterns from AQG by dfs
         """
         if index >= len(self.edges):
             return [[]]
@@ -184,6 +213,8 @@ class AbstractQueryGraph:
         if e_label == 3:
             for p in patterns:
                 new_patterns.append([(v1, v2, e_label)] + p)
+        elif e_label == 4:
+            for p in patterns:
                 new_patterns.append([(v2, v1, e_label)] + p)
         # Isa
         elif e_label == 2:
@@ -251,7 +282,7 @@ class AbstractQueryGraph:
         vertex_maps = [{k:v for k, v in x} for x in vertex_maps]
 
         sparql_patterns = self.mk_patterns(0)
-        rel_pool = json.load(open("./data/relation_pool.json"))
+        assert len(sparql_patterns) == 1
 
         # first grounding: fill vertices into patterns
         conds_set = set()
@@ -316,7 +347,7 @@ class AbstractQueryGraph:
                     continue
                 flag = True
                 for k, v in res.items():
-                    if v not in rel_pool:
+                    if not check_relation(v): # TODO:
                         flag = False
                         break
                 if not flag:

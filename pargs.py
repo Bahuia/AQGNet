@@ -27,6 +27,7 @@ def generation_pargs():
     parser.add_argument("--dropout", default=0.1, type=float)
     parser.add_argument("--heads", default=4, type=int)
     parser.add_argument('--not_birnn', action='store_false', dest='birnn')
+    parser.add_argument('--beam_size', default=5, type=int)
 
     parser.add_argument('--readout', default='identity', choices=['identity', 'non_linear'])
     parser.add_argument('--att_type', default='affine', choices=['dot_prod', 'affine'])

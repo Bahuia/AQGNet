@@ -84,7 +84,15 @@ class SPARQLParser:
             aqg.add_vertex(v_id, v_labels[v])
 
         for v1, e, v2 in edges:
-            aqg.add_edge(v1=v_indexs[v1], v2=v_indexs[v2], e_label=self.check_type(e))
+            # v1 --> v2
+            aqg.add_edge(v1=v_indexs[v1], v2=v_indexs[v2],
+                         e_label=self.check_type(e, inv=False),
+                          both_ends=False)
+
+            # v2 --> v1
+            aqg.add_edge(v1=v_indexs[v2], v2=v_indexs[v1],
+                         e_label=self.check_type(e, inv=True),
+                         both_ends=False)
 
         rule_labels = self.build_rule_obj_labels(aqg)
         return rule_labels, aqg
@@ -111,7 +119,7 @@ class SPARQLParser:
         rule_labels.append(end_id)
         return rule_labels
 
-    def check_type(self, x, is_v=False):
+    def check_type(self, x, is_v=False, inv=False):
         if is_v:
             if x == '?uri':
                 return 0 # Ans
@@ -137,23 +145,31 @@ class SPARQLParser:
                 return 2 # Isa
 
             if x.find("http://dbpedia.org/ontology/") != -1 or x.find("http://dbpedia.org/property/") != -1:
-                return 3 # Rel
+                if not inv:
+                    return 3 #  direction "+" Rel
+                else:
+                    return 4 #  direction "-" Rel
 
             raise ValueError('Wrong edge type: {}'.format(x))
 
 
 if __name__ == '__main__':
     p = SPARQLParser()
-    _, aqg = p.parse("SELECT DISTINCT ?uri WHERE {"
-                     "?uri <http://dbpedia.org/property/mother> <http://dbpedia.org/resource/Cleopatra_V_of_Egypt> . "
-                     "?uri <http://dbpedia.org/property/spouse> <http://dbpedia.org/resource/Ptolemy_XIII_Theos_Philopator>  . "
-                     "?uri <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://dbpedia.org/ontology/Royalty>}")
+    labels1, aqg1 = p.parse("SELECT DISTINCT ?uri WHERE { "
+                          "?x <http://dbpedia.org/ontology/chairman> <http://dbpedia.org/resource/Ronaldo> . "
+                          "?x <http://dbpedia.org/ontology/ground> ?uri  . }")
 
-    cand_vertices = {
-        2: ["<http://dbpedia.org/resource/Cleopatra_V_of_Egypt>",
-            "<http://dbpedia.org/resource/Ptolemy_XIII_Theos_Philopator>"],
-        3: ["<http://dbpedia.org/ontology/Royalty>",]
-    }
+    labels2, aqg2 = p.parse("SELECT DISTINCT ?uri WHERE { "
+                          "?x <http://dbpedia.org/ontology/chairman> <http://dbpedia.org/resource/Ronaldo> . "
+                          "?x <http://dbpedia.org/ontology/ground> ?uri  . }")
 
-    res = aqg.grounding(cand_vertices)
-    print(res)
+    print(aqg1.is_equal(aqg2))
+
+    # cand_vertices = {
+    #     2: ["<http://dbpedia.org/resource/Cleopatra_V_of_Egypt>",
+    #         "<http://dbpedia.org/resource/Ptolemy_XIII_Theos_Philopator>"],
+    #     3: ["<http://dbpedia.org/ontology/Royalty>",]
+    # }
+    #
+    # res = aqg.grounding(cand_vertices)
+    # print(res)

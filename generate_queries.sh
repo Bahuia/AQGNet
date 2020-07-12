@@ -2,8 +2,8 @@
 
 train_data=./data/processed_train.pkl
 valid_data=./data/processed_valid.pkl
-test_data=$1    # structure results path
-dbpedia_endpoint=http://10.201.180.179:3030/dbpedia/sparql
+test_data=$1            # structure prediction results path
+dbpedia_endpoint=$2     # http://10.201.158.104:3030/dbpedia/sparql
 
 
 echo "Start generate candidate queries for training data ..."

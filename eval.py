@@ -13,6 +13,7 @@ import sys
 import time
 import json
 import glob
+import copy
 import torch
 import pickle
 
@@ -21,7 +22,7 @@ import pargs
 from rules.grammar import AbstractQueryGraph
 from data_loaders import GenerationDataLoader
 from models.model import AQGNet
-from utils.utils import kb_constraint, formalize_aqg
+from utils.utils import kb_constraint, formalize_aqg, check_aqg
 
 
 if __name__ == '__main__':
@@ -53,20 +54,29 @@ if __name__ == '__main__':
     print("Load checkpoint from \"%s\"." % os.path.abspath(args.cpt))
 
     query_list = []
+    result_list = []
+    level_corrects = {}
+    level_totals = {}
     n_q_correct, n_q_total = 0, 0
     model.eval()
     for s in test_loader.next_batch():
         data = s[-1][0]
 
-        pred_aqg, action_probs = model.generation(s[:-1])
+        pred_aqgs, action_probs = model.generation(s[:-1], beam_size=args.beam_size)
 
-        pred_aqg, data = formalize_aqg(pred_aqg, data)
+        origin_data = copy.deepcopy(data)
+        tmp_pred_aqgs = []
+        for pred_aqg in pred_aqgs:
+            pred_aqg, data = formalize_aqg(pred_aqg, origin_data)
+            if check_aqg(pred_aqg):
+                tmp_pred_aqgs.append((pred_aqg, data))
 
-        if args.kb_constraint:
-            pred_aqg = kb_constraint(aqg, data, args.kb_endpoint)
 
-        is_correct = pred_aqg.is_equal(data["gold_aqg"])
-        data["pred_aqg"] = pred_aqg
+        pred_aqgs = [x for x in tmp_pred_aqgs]
+
+        top_pred_aqg = pred_aqgs[0][0]
+        is_correct = top_pred_aqg.is_equal(data["gold_aqg"])
+        data["pred_aqgs"] = pred_aqgs
 
         query_list.append(data)
 
@@ -81,4 +91,3 @@ if __name__ == '__main__':
     results_path = os.path.join(checkpoint_dir, 'results.pkl')
     pickle.dump(query_list, open(results_path, "wb"))
     print("Results save to \"{}\"\n".format(results_path))
-

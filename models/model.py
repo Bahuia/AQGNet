@@ -26,7 +26,7 @@ from utils.utils import identity, pad_tensor_1d, mk_graph_for_gnn, length_array_
 from rules.grammar import AbstractQueryGraph
 
 V_CLASS_NUM = 5
-E_CLASS_NUM = 4
+E_CLASS_NUM = 5
 
 
 class AQGNet(nn.Module):
@@ -71,8 +71,8 @@ class AQGNet(nn.Module):
                                                bias = args.readout == 'non_linear')
         self.query_vec_to_ae_vec = nn.Linear(args.d_h, args.d_h,
                                                bias=args.readout == 'non_linear')
-        self.av_readout_b = nn.Parameter(torch.FloatTensor(5).zero_())
-        self.ae_readout_b = nn.Parameter(torch.FloatTensor(4).zero_())
+        self.av_readout_b = nn.Parameter(torch.FloatTensor(V_CLASS_NUM).zero_())
+        self.ae_readout_b = nn.Parameter(torch.FloatTensor(E_CLASS_NUM).zero_())
 
         self.av_readout = lambda q: F.linear(self.read_out_active(self.query_vec_to_av_vec(q)),
                                                      self.vertex_embedding.weight, self.av_readout_b)
@@ -164,7 +164,7 @@ class AQGNet(nn.Module):
 
         return -score, action_probs
 
-    def generation(self, sample):
+    def generation(self, sample, beam_size=5):
         q, q_lens = sample[:2]
 
         batch_size = len(q)
@@ -181,33 +181,42 @@ class AQGNet(nn.Module):
         dec_init_state = self.init_decoder_state(enc_cell_last)
         h_last = dec_init_state
 
+        t = 0
         aqg = AbstractQueryGraph()
         aqg.init_state()
+        beams = [aqg]
+        completed_beams = []
 
         action_probs = []
+        while len(completed_beams) < beam_size and t < self.args.max_num_op:
 
-        for t in range(self.args.max_num_op):
+            exp_q_encodings = q_encodings.expand(len(beams), q_encodings.size(1), q_encodings.size(2))
 
-            vertices, v_labels, edges = aqg.get_state()
+            graph_encodings = []
+            vertex_encodings = []
+            for e_id, aqg in enumerate(beams):
+                vertices, v_labels, edges = aqg.get_state()
 
-            vertices, edges, adj = mk_graph_for_gnn(vertices, v_labels, edges)
+                vertices, edges, adj = mk_graph_for_gnn(vertices, v_labels, edges)
 
-            if self.args.cuda:
-                vertices = vertices.to(self.args.gpu)
-                edges = edges.to(self.args.gpu)
-                adj = adj.to(self.args.gpu)
+                if self.args.cuda:
+                    vertices = vertices.to(self.args.gpu)
+                    edges = edges.to(self.args.gpu)
+                    adj = adj.to(self.args.gpu)
 
-            vertex_embed = self.vertex_embedding(vertices)
-            edge_embed = self.edge_embedding(edges)
+                vertex_embed = self.vertex_embedding(vertices)
+                edge_embed = self.edge_embedding(edges)
 
-            vertex_encoding, edge_encoding, \
-            graph_encoding = self.encode_graph(vertex_embed, edge_embed, adj)
+                vertex_encoding, edge_encoding, \
+                graph_encoding = self.encode_graph(vertex_embed, edge_embed, adj)
 
-            graph_encodings = torch.stack([graph_encoding])
-            vertex_encodings = torch.stack([vertex_encoding])
+                graph_encodings.append(graph_encoding)
+                vertex_encodings.append(vertex_encoding)
 
+            graph_encodings = torch.stack(graph_encodings)
+            vertex_encodings = torch.stack(vertex_encodings)
 
-            (h_t, cell_t), ctx = self.decode_step(h_last, q_encodings, graph_encodings,
+            (h_t, cell_t), ctx = self.decode_step(h_last, exp_q_encodings, graph_encodings,
                                                     src_token_mask=q_mask,
                                                     return_att_weight=True)
 
@@ -225,18 +234,70 @@ class AQGNet(nn.Module):
                                      self.new_long_tensor(action_prob.size(0), 1).zero_()], -1)
                 action_prob.masked_fill_(sv_mask == 0, -float('inf'))
 
-            action_probs.append(action_prob[0])
+            # for e_id in range(len(beams)):
+            #     action_probs[e_id].append(action_prob[e_id])
             action_prob = F.log_softmax(action_prob, dim=-1)
 
-            pred_obj = torch.argmax(action_prob, dim=-1).item()
+            new_aqg_meta = []
+            for e_id, aqg in enumerate(beams):
+                obj_range = aqg.get_obj_range(op)
+                for o_id in obj_range:
+                    obj_score = action_prob[e_id, o_id]
+                    new_aqg_score = aqg.score + obj_score.data.cpu()
+                    meta_entry = {
+                        "op": op,
+                        "obj": o_id,
+                        "obj_score":obj_score,
+                        "new_aqg_score": new_aqg_score,
+                        "prev_aqg_id": e_id
+                    }
+                    new_aqg_meta.append(meta_entry)
 
-            if op == 'av' and pred_obj == 4:
+            if not new_aqg_meta:
                 break
 
-            aqg.update_state(op, pred_obj)
-            h_last = (h_t, cell_t)
+            new_aqg_scores = torch.stack([x['new_aqg_score'] for x in new_aqg_meta], dim=0)
 
-        return aqg, action_probs
+            if t == 0:
+                k = 1
+            else:
+                k = min(new_aqg_scores.size(0), beam_size - len(completed_beams))
+            top_new_aqg_scores, meta_ids = torch.topk(new_aqg_scores, k=k)
+
+            live_aqg_ids = []
+            new_beams = []
+            for new_aqg_score, meta_id in zip(top_new_aqg_scores.data.cpu(), meta_ids.data.cpu()):
+                aqg_meta_entry = new_aqg_meta[meta_id]
+                op = aqg_meta_entry["op"]
+                obj = aqg_meta_entry["obj"]
+                new_aqg_score = aqg_meta_entry["new_aqg_score"]
+                prev_aqg_id = aqg_meta_entry['prev_aqg_id']
+                prev_aqg = beams[prev_aqg_id]
+
+                new_aqg = copy.deepcopy(prev_aqg)
+
+                if op == "av" and obj == V_CLASS_NUM - 1:
+                    new_aqg.update_score(new_aqg_score)
+                    completed_beams.append(new_aqg)
+                else:
+                    new_aqg.update_state(op, obj)
+                    new_aqg.update_score(new_aqg_score)
+                    new_beams.append(new_aqg)
+                    live_aqg_ids.append(prev_aqg_id)
+
+            if not live_aqg_ids:
+                break
+
+            h_last = (h_t[live_aqg_ids], cell_t[live_aqg_ids])
+            beams = new_beams
+
+            t += 1
+
+        completed_beams.sort(key=lambda aqg: -aqg.score)
+        if len(completed_beams) == 0:
+            return [[], []]
+
+        return completed_beams, action_probs
 
 
     def encode_graph(self, vertex_tensor, edge_tensor, adj):

@@ -42,21 +42,6 @@ def parse_entity(entity):
     entity_name = entity[len(prefix):].strip(">")
     return list(entity_name)
 
-def cmp_priority(v1, v2):
-    if v1 == "?uri":
-        return "+"
-    if v2 == "?uri":
-        return "-"
-    if v1[0] == "?" and v2[0] == "?":
-        v1_id = int(v1.split("_")[-1])
-        v2_id = int(v2.split("_")[-1])
-        return "+" if v1_id < v2_id else "-"
-    elif v1[0] == "?" and v2[0] != "?":
-        return "+"
-    elif v2[0] == "?" and v1[0] != "?":
-        return "-"
-    else:
-        return "+"
 
 def parse_query(query):
     where_clauses = re.findall(p_where, query)
@@ -70,9 +55,8 @@ def parse_query(query):
         if p == "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type>":
             types.append(parse_type(o))
         else:
-            rel_direction = cmp_priority(s, o)
             rel = parse_relation(p)
-            relations.append([rel_direction] + rel)
+            relations.append(rel)
     return relations + types
 
 def get_triples_from_query(query):
@@ -97,31 +81,12 @@ def cmp_queries(query1, query2):
         return True
     return False
 
-rel_pool = json.load(open("../data/relation_pool.json"))
-
-def filter(cand_queries):
-    new_cand_queries = []
-    for query in cand_queries:
-        flag = True
-        rels = get_rels_from_query(query)
-        for rel in rels:
-            rel = rel.strip("<").strip(">")
-            if rel not in rel_pool:
-                flag = False
-                break
-        if not flag:
-            continue
-        new_cand_queries.append(query)
-    return new_cand_queries
-
 def preprocess(datas, training=False):
     processed_datas = []
     for d in datas:
         select_clause = d["query"][:d["query"].find("{")].strip(" ")
         triples = get_triples_from_query(d["query"])
         d["query"] = select_clause + "{ " + " . ".join(triples) +  " }"
-
-        # d["cand_queries"] = filter(d["cand_queries"])
 
         if training:
             d["cand_queries"] = [x for x in d["cand_queries"] if not cmp_queries(x, d["query"])]

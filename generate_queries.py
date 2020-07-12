@@ -39,7 +39,6 @@ if __name__ == '__main__':
     if not os.path.exists(args.output):
         os.makedirs(args.output)
 
-    long_time_samples = []
 
     for i, d in enumerate(datas):
         if i % 100 == 0:
@@ -49,7 +48,6 @@ if __name__ == '__main__':
 
         print("processing {} ...".format(d["id"]))
 
-        aqg = d["gold_aqg"] if args.gold else d["pred_aqg"]
 
         # for training data
         if args.gold:
@@ -66,15 +64,20 @@ if __name__ == '__main__':
                 cand_types.add(gold_type)
                 d["cand_types"] = [x for x in list(cand_types)]
 
-        cands = generate_cand_queries(aqg, d, args.kb_endpoint)
+        aqgs = [[d["gold_aqg"], d]] if args.gold else d["pred_aqgs"]
 
-        if cands == "TimeOut":
-            cands = []
-            long_time_samples.append(d["id"])
+        cands = []
+        for aqg, data in aqgs:
+            cands = generate_cand_queries(aqg, data, args.kb_endpoint)
+            if cands == "TimeOut":
+                cands = []
+            if len(cands) != 0:
+                break
+
 
         d.pop("gold_aqg")
-        if "pred_aqg" in d:
-            d.pop("pred_aqg")
+        if "pred_aqgs" in d:
+            d.pop("pred_aqgs")
         d["cand_queries"] = cands
         print(len(cands))
 

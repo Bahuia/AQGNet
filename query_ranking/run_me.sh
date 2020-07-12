@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-train_data=/home/test2/yongrui.chen/AQGNet_local/train_candidate_queries
-valid_data=/home/test2/yongrui.chen/AQGNet_local/valid_candidate_queries
-test_data=/home/test2/yongrui.chen/AQGNet_local/test_candidate_queries
+train_data=./data/train_candidate_queries
+valid_data=./data/valid_candidate_queries
+test_data=$1    # path of generated test candidate queries
 
 output_train=../data/ranking_processed_train.pkl
 output_valid=../data/ranking_processed_valid.pkl

@@ -136,8 +136,11 @@ class RankingDataLoader:
         batch_index = -1  # the index of sequence batches
         sample_index = 0  # sequence index within each batch
 
+        miss_qid_list = []
+
         for d in datas:
             if not training and len(d["processed_cand_queries"]) == 0:
+                miss_qid_list.append(d["id"])
                 continue
             if sample_index % bs == 0:
                 sample_index = 0
@@ -146,6 +149,8 @@ class RankingDataLoader:
             x = self.process_one_data(d, training=training)
             bl_x[batch_index].append(x)
             sample_index += 1
+
+        json.dump(miss_qid_list, open("/home/test2/yongrui.chen/AQGNet_dir/miss_qid_list.json", "w"), indent=4)
 
         self.iters = []
         self.n_batch = len(bl_x)

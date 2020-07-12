@@ -17,6 +17,7 @@ import torch.nn as nn
 import copy
 import json
 from nltk.stem import WordNetLemmatizer
+import signal, functools
 
 
 REAL = np.float32
@@ -189,7 +190,60 @@ def cal_score(pred_answers, gold_answers):
     f1 = 2.0 * p / (p + r) * r
     return (p, r, f1)
 
-def formalize_aqg(aqg, data):
+def check_aqg(aqg):
+    if len(aqg.vertices) < 2:
+        return False
+    label_nums = {0: 0, 1: 0, 2:0, 3: 0}
+    for v, label in aqg.v_labels.items():
+        label_nums[label] += 1
+    if label_nums[0] != 1 or label_nums[3] > 1 or label_nums[2] not in [1, 2]:
+        return False
+    is_ask = False
+    for v1, v2, e_label in aqg.edges:
+        if e_label == 1:
+            is_ask = True
+            break
+    for v1, v2, e_label in aqg.edges:
+        if v1 not in aqg.v_labels or v2 not in aqg.v_labels:
+            return False
+        if e_label == 0:
+            if not ((aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 0)):
+                return False
+        elif e_label == 1:
+            if not ((aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 2) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 0)):
+                return False
+        elif e_label == 2:
+            if not ((aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 3) or
+                    (aqg.v_labels[v1] == 3 and aqg.v_labels[v2] == 0) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 3) or
+                    (aqg.v_labels[v1] == 3 and aqg.v_labels[v2] == 1)):
+                return False
+        elif e_label == 3:
+            if not ((aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 2) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 0) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 2) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 0) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 2 and is_ask)):
+                return False
+        elif e_label == 4:
+            if not ((aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 2) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 0) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 2) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 0 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 0) or
+                    (aqg.v_labels[v1] == 1 and aqg.v_labels[v2] == 1) or
+                    (aqg.v_labels[v1] == 2 and aqg.v_labels[v2] == 2 and is_ask)):
+                return False
+    return True
+
+def formalize_aqg(aqg, origin_data):
+    data = copy.deepcopy(origin_data)
     type_v = -1
     for v, label in aqg.v_labels.items():
         if label == 3:
@@ -212,10 +266,10 @@ def formalize_aqg(aqg, data):
         if len(data["cand_types"]) > 0 and ent_v_num == 1:
             if len(aqg.edges) >= 4:
                 v_add = len(aqg.vertices)
-                aqg.add_vertex(v_add, 3)
-                assert aqg.v_labels[1] == 1
-                aqg.add_edge(1, v_add, 2)
-                aqg.pred_obj_labels.extend([3, 1, 2])
+                if aqg.v_labels[1] == 1:
+                    aqg.add_vertex(v_add, 3)
+                    aqg.add_edge(1, v_add, 2)
+                    aqg.pred_obj_labels.extend([3, 1, 2])
     else:
         if len(data["cand_types"]) == 0:
             attached_u = -1
@@ -288,6 +342,34 @@ def kb_constraint(aqg, data, kb_endpoint):
 
     return aqg
 
+class TimeoutError(Exception): pass
+
+
+def timeout(seconds, error_message="Timeout Error: the cmd 30s have not finished."):
+    def decorated(func):
+        result = ""
+
+        def _handle_timeout(signum, frame):
+            global result
+            result = "TimeOut"
+            raise TimeoutError(error_message)
+
+        def wrapper(*args, **kwargs):
+            global result
+            signal.signal(signal.SIGALRM, _handle_timeout)
+            signal.alarm(seconds)
+
+            try:
+                result = func(*args, **kwargs)
+            finally:
+                signal.alarm(0)
+                return result
+            return result
+
+        return functools.wraps(func)(wrapper)
+    return decorated
+
+@timeout(600)
 def generate_cand_queries(aqg, data, kb_endpoint):
     cand_vertices = {2: []}
 

@@ -146,7 +146,8 @@ if __name__ == '__main__':
         val_n_q_correct, val_n_q_total = 0, 0
         for s in valid_loader.next_batch():
             data = s[-1][0]
-            pred_aqg, action_probs = model.generation(s[:-1])
+            pred_aqgs, action_probs = model.generation(s[:-1], beam_size=args.beam_size)
+            pred_aqg = pred_aqgs[0]
 
             if pred_aqg.is_equal(data["gold_aqg"]):
                 val_n_q_correct += 1

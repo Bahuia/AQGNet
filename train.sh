@@ -1,11 +1,11 @@
 #!/bin/bash
 
-devices=$1
+devices=0
 
 python train.py \
 --train_data ./data/processed_train.pkl \
 --valid_data ./data/processed_valid.pkl \
---glove_path ./data/GloVe/glove.42B.300d.txt \
+--glove_path ../GloVe/glove.42B.300d.txt \
 --readout identity \
 --att_type affine \
 --d_h 256 \
@@ -13,6 +13,7 @@ python train.py \
 --n_lstm_layers 1 \
 --n_gnn_blocks 3 \
 --heads 4 \
---n_epochs 30 \
+--n_epochs 25 \
 --bs 16 \
---lr 2e-4
+--lr 2e-4 \
+--beam_size 7

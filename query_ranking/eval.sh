@@ -2,7 +2,7 @@
 
 devices=$1
 save_name=$2
-dbpedia_endpoint=$3
+dbpedia_endpoint=$3       # http://10.201.158.104:3030/dbpedia/sparql
 
 python eval.py \
 --test_data ../data/ranking_processed_test.pkl \
