@@ -1,11 +1,11 @@
 #!/bin/bash
 
-devices=0
+devices=$1
 
 python train.py \
 --train_data ../data/ranking_processed_train.pkl \
 --valid_data ../data/ranking_processed_valid.pkl \
---glove_path ../../GloVe/glove.42B.300d.txt \
+--glove_path ../data/glove.42B.300d.txt \
 --d_h_wo 512 \
 --d_emb_wo 300 \
 --gpu $devices \
