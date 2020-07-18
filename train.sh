@@ -1,6 +1,6 @@
 #!/bin/bash
 
-devices=0
+devices=$1
 
 python train.py \
 --train_data ./data/processed_train.pkl \
