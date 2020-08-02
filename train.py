@@ -92,7 +92,6 @@ if __name__ == '__main__':
     iters = 0
     start = time.time()
     best_val_q_acc = 0
-    best_lv4_q_acc = 0
 
     header = '\n  Time Epoch         Loss    Train_Step_Acc        Train_Acc        Valid_Acc'
     val_log_template = ' '.join(
