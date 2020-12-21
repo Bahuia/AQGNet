@@ -1,8 +1,11 @@
 Data and Code for IJCAI 2020 paper [Formal Query Building with Query Structure Prediction for Complex Question Answering over Knowledge Base](https://www.ijcai.org/Proceedings/2020/0519.pdf) is available for research purposes.  
+
+This project only includes the processing of the LC-QuAD [(Trivedi et al., 2017)](http://jens-lehmann.org/files/2017/iswc_lcquad.pdf) dataset, and we are sorry that the source code of the remaining two data sets, WebQuestions [(Berant et al., 2013)](https://www.aclweb.org/anthology/D13-1160.pdf) and ComplexQuestions [(Bao et al, 2016)](https://www.aclweb.org/anthology/C16-1236.pdf), cannot be released due to the lack of organization currently. We will release them in a unified way in future work.  In view of the preprocessing data link provided by [(Luo et al., 2018)](https://www.aclweb.org/anthology/D18-1242.pdf) for WebQ and CompQ is no longer valid, we provide a new link [here](https://drive.google.com/file/d/1bL5vEIek9kBDe_IKbicl5y_6k-fQ6Ogd/view?usp=sharing) for subsequent researchers. 
+
 ### Requirements
 * Python 3.6
 * Pytorch 1.2.0
-* DBpedia Version 2016-04
+* DBpedia Version [2016-04](https://wiki.dbpedia.org/dbpedia-version-2016-04) (Note the version. If you use the latest DBpedia version, the answers to  some questions will not be retrieved)
 * SPARQL service (constructed by Virtuoso or Apache Jena Fuseki)
 
 ### Running Code
