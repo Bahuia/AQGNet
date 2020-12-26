@@ -150,8 +150,6 @@ class RankingDataLoader:
             bl_x[batch_index].append(x)
             sample_index += 1
 
-        json.dump(miss_qid_list, open("/home/test2/yongrui.chen/AQGNet_dir/miss_qid_list.json", "w"), indent=4)
-
         self.iters = []
         self.n_batch = len(bl_x)
         for x in bl_x:

@@ -5,8 +5,16 @@ This project only includes the processing of the LC-QuAD [(Trivedi et al., 2017)
 ### Requirements
 * Python 3.6
 * Pytorch 1.2.0
-* DBpedia Version [2016-04](https://wiki.dbpedia.org/dbpedia-version-2016-04) (Note the version. If you use the latest DBpedia version, the answers to  some questions will not be retrieved)
+* DBpedia Version [2016-04](https://drive.google.com/file/d/17TRlj8a34IEo686nnKHTewZEg4aMrYUe/view?usp=sharing) (Note the version. If you use the latest DBpedia version, the answers to some questions will not be retrieved. Here, we also performed a preprocessing on it, and only retained the English part related to the LC-QuAD data set.)
 * SPARQL service (constructed by Virtuoso or Apache Jena Fuseki)
+
+### Update
+Recently, we have updated AQGNet, we changed AQG from **undirected graph** to the **directed graph** and added *beam search* in structure prediction. According to this update, the performance of our approach has been further improved on the LC-QuAD.
+
+| **Dataset**   | AQG prediction | Precision | Recall | F1-score |
+| ------------- | :------------: | :-------: | :----: | :------: |
+|   LC-QuAD     |  72.8          | 77.38     | 76.73  | 76.59    |
+
 
 ### Running Code
 Download [Glove Embedding](http://nlp.stanford.edu/data/glove.42B.300d.zip) and put `glove.42B.300d.txt` under `./data/` directory.
