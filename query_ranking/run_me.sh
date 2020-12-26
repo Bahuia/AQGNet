@@ -3,7 +3,7 @@
 
 train_data=../data/train_candidate_queries
 valid_data=../data/valid_candidate_queries
-test_data=../data/test_candidate_queries
+test_data=../data/test_candidate_queries_1590760970
 
 output_train=../data/ranking_processed_train.pkl
 output_valid=../data/ranking_processed_valid.pkl
