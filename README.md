@@ -15,6 +15,10 @@ Recently, we have updated AQGNet, we changed AQG from **undirected graph** to th
 | ------------- | :------------: | :-------: | :----: | :------: |
 |   LC-QuAD     |  72.8          | 77.38     | 76.73  | 76.59    |
 
+#### Download Trained Model
+We provide the above [trained AQGNet model](https://drive.google.com/file/d/1PPs2u4CX_qraFhl1YNQTbvp-MAvhKRbd/view?usp=sharing). Please download and unzip, move it to the `./runs` directory.
+Here we provide the [candidate queries](https://drive.google.com/file/d/10fKDMPHxO-w85TWuCwHS1zW9tv9zHlOs/view?usp=sharing) of the training set, the verification set and the test set respectively, where the candidate queries of the test set are obtained from the prediction results of the above model. Please download and unzip, move it to the `./data` directory.
+We also provide the [trained query ranking model](https://drive.google.com/file/d/1p1JnQlTQ2kA-ZnRoAKYOqu7FWwzX-dT8/view?usp=sharing). Please download and unzip, move it to the `./query_ranking/runs` directory.
 
 ### Running Code
 Download [Glove Embedding](http://nlp.stanford.edu/data/glove.42B.300d.zip) and put `glove.42B.300d.txt` under `./data/` directory.
