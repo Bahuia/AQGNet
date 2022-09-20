@@ -1,4 +1,8 @@
-Data and Code for IJCAI 2020 paper [Formal Query Building with Query Structure Prediction for Complex Question Answering over Knowledge Base](https://www.ijcai.org/Proceedings/2020/0519.pdf) is available for research purposes.  
+### Important Notice
+Our latest work [*Outlining and Filling: Hierarchical Query Graph Generation for Answering Complex Questions over Knowledge Graphs*](https://arxiv.org/abs/2111.00732) has been accepted by IEEE Transactions on Knowledge and Data Engineering. All [source codes](https://github.com/Bahuia/HGNet) are available for research purposes. 
+
+### Overview
+Data and code for IJCAI 2020 paper [Formal Query Building with Query Structure Prediction for Complex Question Answering over Knowledge Base](https://www.ijcai.org/Proceedings/2020/0519.pdf) is available for research purposes.  
 
 This project only includes the processing of the LC-QuAD [(Trivedi et al., 2017)](http://jens-lehmann.org/files/2017/iswc_lcquad.pdf) dataset, and we are sorry that the source code of the remaining two data sets, WebQuestions [(Berant et al., 2013)](https://www.aclweb.org/anthology/D13-1160.pdf) and ComplexQuestions [(Bao et al, 2016)](https://www.aclweb.org/anthology/C16-1236.pdf), cannot be released due to the lack of organization currently. We will release them in a unified way in future work.  In view of the preprocessing data link provided by [(Luo et al., 2018)](https://www.aclweb.org/anthology/D18-1242.pdf) for WebQ and CompQ is no longer valid, we provide a new link [here](https://drive.google.com/file/d/1bL5vEIek9kBDe_IKbicl5y_6k-fQ6Ogd/view?usp=sharing) for subsequent researchers. 
 
